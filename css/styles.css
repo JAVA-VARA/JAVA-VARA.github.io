@@ -1,6 +1,7 @@
 body {
     font-family: 'Arial', sans-serif;
     padding-top: 56px;
+    color: #333;
 }
 
 .navbar-brand {
@@ -9,7 +10,7 @@ body {
 }
 
 .hero-section {
-    background: url('https://i.namu.wiki/i/-L_vJuL3PQ-BK45O5a8q-mX7hThvn_vokMkzdiPQERQ7OgUtwSNSUstYV_DOuKPDAgZnPZrgr8Y96jjfQa-peQ.svg') no-repeat center center;
+    background: url(https://source.unsplash.com/random/1920x1080) no-repeat center center;
     background-size: cover;
     color: white;
     height: 100vh;
@@ -21,11 +22,39 @@ body {
 
 .hero-section h1 {
     font-size: 3rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    animation: fadeInDown 1.5s;
 }
 
 .hero-section p {
     font-size: 1.25rem;
+    animation: fadeInUp 1.5s;
+}
+
+.hero-section .btn {
+    animation: fadeInUp 2s;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 section {
@@ -35,6 +64,11 @@ section {
 #about img {
     max-width: 80%;
     margin: 20px auto;
+    transition: transform 0.3s;
+}
+
+#about img:hover {
+    transform: scale(1.05);
 }
 
 #skills .list-inline-item {
@@ -44,6 +78,11 @@ section {
 #skills i {
     display: block;
     margin-bottom: 10px;
+    transition: transform 0.3s;
+}
+
+#skills i:hover {
+    transform: scale(1.2);
 }
 
 #contact {
