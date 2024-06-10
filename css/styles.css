@@ -1,0 +1,56 @@
+body {
+    font-family: 'Arial', sans-serif;
+    padding-top: 56px;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.hero-section {
+    background: url('https://i.namu.wiki/i/-L_vJuL3PQ-BK45O5a8q-mX7hThvn_vokMkzdiPQERQ7OgUtwSNSUstYV_DOuKPDAgZnPZrgr8Y96jjfQa-peQ.svg') no-repeat center center;
+    background-size: cover;
+    color: white;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.hero-section p {
+    font-size: 1.25rem;
+}
+
+section {
+    padding: 60px 0;
+}
+
+#about img {
+    max-width: 80%;
+    margin: 20px auto;
+}
+
+#skills .list-inline-item {
+    margin: 20px;
+}
+
+#skills i {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#contact {
+    background: #343a40;
+}
+
+footer {
+    background: #343a40;
+    color: white;
+}
