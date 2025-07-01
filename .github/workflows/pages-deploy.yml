@@ -45,6 +45,14 @@ jobs:
           ruby-version: 3.3
           bundler-cache: true
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/* # 최신 LTS 버전 사용
+
+      - name: Build Assets # npm install 및 자산 빌드 (Chirpy 테마 요구사항)
+        run: npm install && npm run build
+
       - name: Build site
         run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"
         env:
