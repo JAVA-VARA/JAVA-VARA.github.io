@@ -67,7 +67,7 @@ const more = [
         <h1>윤석주</h1>
         <p class="role">임상연구코디네이터(CRC), 연구 데이터 자동화 담당</p>
         <p class="pitch">사수 없이 독학으로 배워, AI 전환(AX)이 들어오기 어려운 병원 연구실에 데이터 업무 자동화를 들여오고 있습니다.</p>
-        <p class="contact"><a href="mailto:sj.youns1027@gmail.com">sj.youns1027@gmail.com</a> <a href="https://github.com/JAVA-VARA">github.com/JAVA-VARA</a></p>
+        <p class="contact"><a href="mailto:sj.youns1027@gmail.com">sj.youns1027@gmail.com</a> <a href="https://github.com/JAVA-VARA" target="_blank" rel="noopener">github.com/JAVA-VARA</a></p>
       </div>
     </header>
 
@@ -123,7 +123,7 @@ const more = [
             {p.points.map(([k, v]) => (<><dt>{k}</dt><dd>{v}</dd></>))}
           </dl>
           {p.links.length > 0 && (
-            <p class="links">{p.links.map(([label, href]) => <a href={href}>{label}</a>)}</p>
+            <p class="links">{p.links.map(([label, href]) => <a href={href} target="_blank" rel="noopener">{label}</a>)}</p>
           )}
         </div>
       ))}
@@ -136,7 +136,7 @@ const more = [
           <li>
             <div class="entry-head"><h3>{p.name}</h3><span class="period">{p.period}</span></div>
             <p>{p.line}</p>
-            {p.links.length > 0 && <p class="links">{p.links.map(([label, href]) => <a href={href}>{label}</a>)}</p>}
+            {p.links.length > 0 && <p class="links">{p.links.map(([label, href]) => <a href={href} target="_blank" rel="noopener">{label}</a>)}</p>}
           </li>
         ))}
       </ul>
