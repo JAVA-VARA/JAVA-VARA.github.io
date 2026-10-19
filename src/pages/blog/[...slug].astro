@@ -1,0 +1,34 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { allPosts, ymd, THEMES, type Post } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await allPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+const { Content } = await render(post);
+const d = post.data;
+---
+<Base title={d.title} description={d.description}>
+  <article>
+    <header class="post-head">
+      <h1>{d.title}</h1>
+      <div class="meta">
+        <time datetime={ymd(d.date)}>{ymd(d.date)}</time>
+        {d.theme && <span class="theme" data-theme={d.theme}>{THEMES[d.theme]}</span>}
+        {d.tags.length > 0 && <span>{d.tags.join(', ')}</span>}
+      </div>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+    <footer class="post-foot">
+      {d.source === 'medium' && d.original
+        ? <p>Medium 에 먼저 쓴 글을 옮겼다. <a href={d.original}>원문</a></p>
+        : <p><a href="/">다른 글 보기</a></p>}
+    </footer>
+  </article>
+</Base>
