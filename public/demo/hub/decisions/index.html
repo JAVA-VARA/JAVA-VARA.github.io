@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>판단 대기열</title>
+<script src="../scripts/theme.js"></script>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f4f7f8; --card: #fff; --text: #173044; --muted: #586f78; --line: #d8e1e7;
+    --block: #a62626; --block-bg: #fdeeee; --prov: #8c5700; --prov-bg: #fff1d6;
+    --ok: #11786f; --no: #a62626; --hold: #586f78;
+    --reply: #e7f5f1; --recommend: #e7f5f1;
+    --avatar-1: #a12c36; --avatar-2: #9a4c00; --avatar-3: #216b38; --avatar-4: #006b70;
+    --avatar-5: #315a9c; --avatar-6: #75438a; --avatar-7: #70502f;
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #111418; --card: #1b2026; --text: #e6e8ec; --muted: #a5adb6; --line: #343b44;
+    --block: #ff8a80; --block-bg: #3a1d1b; --prov: #ffcc66; --prov-bg: #3a2e14;
+    --ok: #7fd4bd; --no: #ff9b9b; --hold: #bdbdb6;
+    --reply: #203b2b; --recommend: #263b2b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 14px/1.5 system-ui, "Malgun Gothic", sans-serif; }
+  main { width: 100%; margin: 0 auto; padding: 12px 16px 32px; }
+  header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  h1 { font-size: 20px; margin: 0; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; border-bottom: 1px solid var(--line); }
+  .tabs button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; }
+  .tabs button[aria-selected="true"] { color: var(--ok); border-bottom-color: var(--ok); font-weight: 700; }
+  h2 { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted);
+       margin: 16px 0 10px; font-weight: 600; text-align: center; }
+  h2::before, h2::after { content: ""; height: 1px; background: var(--line); flex: 1; }
+  .thread { margin: 0 0 18px; animation: arrive 150ms ease-out; min-width: 0; }
+  .thread.done { opacity: .7; }
+  .speaker { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; }
+  .avatar { display: grid; place-items: center; width: 34px; height: 34px; flex: none;
+            border-radius: 50%; color: #fff; font-size: 12px; font-weight: 700; }
+  .speaker-name { font-size: 13px; font-weight: 700; overflow-wrap: anywhere; }
+  .branch { color: var(--muted); font-size: 12px; font-weight: 400; margin-left: 6px;
+            min-width: 0; overflow-wrap: anywhere; }
+  .conversation { margin-left: 43px; min-width: 0; }
+  .bubble { max-width: 85%; width: fit-content; padding: 10px 12px; border-radius: 4px 14px 14px 14px;
+            background: var(--card); border: 1px solid var(--line); overflow-wrap: anywhere; }
+  .conversation > .bubble:not(.reply):not(.small) { width: 100%; max-width: none; }
+  .bubble + .bubble { margin-top: 10px; }
+  .bubble.reply { margin-left: auto; background: var(--reply); border-radius: 16px 4px 16px 16px; }
+  .bubble.small { font-size: 13px; color: var(--muted); }
+  .bubble .title { font-size: 17px; line-height: 1.4; margin: 8px 0 6px; font-weight: 700; }
+  .question { margin: 0; }
+  .recommend { margin-top: 12px; padding: 9px 11px; background: var(--recommend);
+               border-left: 3px solid var(--ok); border-radius: 5px; }
+  .recommend strong { color: var(--ok); margin-right: 6px; }
+  .top { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .tag { font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 99px; }
+  .tag.차단 { color: var(--block); background: var(--block-bg); }
+  .tag.잠정 { color: var(--prov); background: var(--prov-bg); }
+  .id { color: var(--muted); font-size: 13px; }
+  .pending { color: var(--muted); }
+  .pending::after { content: "…"; display: inline-block; animation: blink 1.8s ease-in-out infinite; }
+  .progress { display: inline-block; margin-top: 8px; padding: 2px 9px; border-radius: 99px;
+              background: var(--prov-bg); color: var(--prov); font-size: 12px; }
+  ul { margin: 8px 0; padding-left: 18px; }
+  li { margin: 2px 0; }
+  .evidence summary { margin-top: 10px; font-size: 13px; }
+  .actions { margin-top: 9px; }
+  .choices { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+  .response-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 7px; }
+  .actions input { flex: 1 1 150px; min-width: 0; padding: 6px 10px; border: 1px solid var(--line);
+                   border-radius: 6px; background: var(--bg); color: var(--text); font: inherit; }
+  button { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--line);
+           background: var(--card); color: var(--text); font: inherit; cursor: pointer; }
+  button:hover { border-color: var(--ok); }
+  button:focus-visible, summary:focus-visible, input:focus-visible { outline: 2px solid var(--ok); outline-offset: 2px; }
+  .choice { width: 100%; border-radius: 10px; text-align: left; white-space: normal; overflow-wrap: anywhere; }
+  .choice.recommended { background: var(--recommend); color: var(--ok); border-color: var(--ok); font-weight: 700; }
+  button[aria-pressed="true"] { border: 2px solid var(--text); padding: 5px 13px; }
+  button[aria-pressed="true"]::before { content: "✓ "; font-weight: 700; }
+  .submit { background: var(--ok); border-color: var(--ok); color: var(--bg); }
+  .submit:disabled { opacity: .45; cursor: default; }
+  .choice-impact { display: block; color: var(--muted); font-size: 13px; font-weight: 400; }
+  .choices > .승인 { align-self: flex-start; }
+  button.승인 { color: var(--ok); border-color: var(--ok); }
+  button.거절 { color: var(--no); border-color: var(--no); }
+  button.보류 { color: var(--hold); }
+  details summary { cursor: pointer; color: var(--muted); }
+  #histBox > summary { margin-top: 28px; }
+  .empty { color: var(--muted); padding: 24px 0; }
+  .err { color: var(--block); }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 8px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; white-space: nowrap; }
+  td.nowrap { white-space: nowrap; color: var(--muted); }
+  @keyframes arrive { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+  @keyframes blink { 50% { opacity: .2; } }
+  @media (prefers-reduced-motion: reduce) {
+    .thread, .pending::after { animation: none; }
+  }
+  @media (max-width: 480px) {
+    main { padding: 12px 10px 24px; }
+    .conversation { margin-left: 0; }
+    .bubble { max-width: 85%; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>판단 대기열</h1>
+    <button id="reload" style="margin-left:auto">새로고침</button>
+  </header>
+  <div id="tabs" class="tabs" role="tablist" aria-label="항목 필터"></div>
+  <div id="items" role="tabpanel" tabindex="0"></div>
+  <details id="histBox" hidden><summary>선택 기록 (decisions.sqlite, 최근 200건)</summary>
+    <div class="scroll"><table><thead><tr><th>시각</th><th>브랜치</th><th>항목</th><th>상태</th><th>답</th></tr></thead>
+    <tbody id="hist"></tbody></table></div></details>
+</main>
+<script src="decisions-demo-api.js"></script>
+<script>
+const OPEN = new Set(["대기", "보류", "잠정진행"]);
+const TAB_LABELS = {all: "전체", block: "답변 대기", prov: "검토 대기", done: "완료"};
+const KIND_LABELS = {"차단": TAB_LABELS.block, "잠정": TAB_LABELS.prov};
+const kindLabel = kind => KIND_LABELS[kind] ?? kind;
+let activeTab = "block";
+let groups = {block: [], prov: [], done: []};
+let fileColors = new Map();
+const el = (tag, cls, text) => {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+};
+
+function splitNumbered(value) {
+  const parts = value.split(/(\d+)\)\s*/);
+  if (parts[0].trim() || parts.length < 3) return [];
+  const entries = [];
+  for (let i = 1; i < parts.length; i += 2)
+    if (parts[i + 1]?.trim()) entries.push({number: parts[i], text: parts[i + 1].trim()});
+  return entries.length === (parts.length - 1) / 2 ? entries : [];
+}
+
+function parseBody(lines) {
+  const result = {question: "", recommendation: null, choices: [], impacts: new Map(), details: []};
+  const impactLines = [];
+  for (const raw of lines || []) {
+    const line = raw.replace(/^\s*-\s*/, "").trim();
+    const question = /^정할 것:\s*(.+)$/.exec(line);
+    const recommend = /^추천:\s*(\d+)\s*(?:[—–-]\s*)?(.+)$/.exec(line);
+    if (question && !result.question) result.question = question[1];
+    else if (recommend && !result.recommendation) result.recommendation = {number: recommend[1], reason: recommend[2]};
+    else if (/^선택지:\s*/.test(line) && !result.choices.length) {
+      const choices = splitNumbered(line.replace(/^선택지:\s*/, ""));
+      if (choices.length)
+        result.choices = choices.map(({number, text}) => ({number, label: text}));
+      else result.details.push(line);
+    } else if (/^영향:\s*/.test(line)) {
+      const impacts = splitNumbered(line.replace(/^영향:\s*/, ""));
+      if (impacts.length) {
+        for (const {number, text} of impacts) result.impacts.set(number, text);
+        impactLines.push(line);
+      } else result.details.push(line);
+    } else result.details.push(line);
+  }
+  if (!result.choices.length) result.details.push(...impactLines);
+  return result;
+}
+
+function card(item, file, branch, session, isOpen, colorIndex) {
+  const thread = el("article", "thread" + (isOpen ? "" : " done"));
+  const stem = file.replace(/\\/g, "/").split("/").pop().replace(/\.md$/i, "").replace(/^claude-/, "");
+  const palette = ["--avatar-1", "--avatar-2", "--avatar-3", "--avatar-4", "--avatar-5", "--avatar-6", "--avatar-7"];
+  const avatar = el("span", "avatar", stem.slice(0, 2).toUpperCase());
+  avatar.style.backgroundColor = `var(${palette[colorIndex % palette.length]})`;
+  const speaker = el("div", "speaker");
+  speaker.append(avatar, el("span", "speaker-name", session || stem),
+                 el("span", "branch", session ? `${stem} · ${branch}` : branch));
+  const conversation = el("div", "conversation");
+  const bubble = el("div", "bubble");
+  const top = el("div", "top");
+  top.append(el("span", "tag " + item.kind, kindLabel(item.kind)), el("span", "id", item.id));
+  bubble.append(top, el("div", "title", item.title));
+
+  const body = parseBody(item.body);
+  if (body.question) bubble.append(el("p", "question", body.question));
+  if (body.recommendation) {
+    const recommend = el("div", "recommend");
+    recommend.append(el("strong", null, `추천 ${body.recommendation.number}번`),
+                     el("span", null, body.recommendation.reason));
+    bubble.append(recommend);
+  }
+  if (body.details.length) {
+    const details = el("details", "evidence");
+    details.append(el("summary", null, "근거·세부"));
+    const list = el("ul");
+    for (const line of body.details) list.append(el("li", null, line));
+    details.append(list);
+    bubble.append(details);
+  }
+  conversation.append(bubble);
+  if (item.status === "잠정진행") conversation.append(el("span", "progress", "이미 추천안으로 진행함"));
+
+  const actions = el("div", "actions");
+  const input = el("input");
+  input.placeholder = "메모 (선택 사유 등)";
+  input.setAttribute("aria-label", `${item.id} 메모`);
+  const choices = el("div", "choices");
+  const response = el("div", "response-actions");
+  const submit = el("button", "submit", "제출");
+  submit.disabled = true;
+  let selected = null;
+  let saving = false;
+  const pick = (button, status, number = null) => {
+    button.setAttribute("aria-pressed", "false");
+    button.onclick = () => {
+      if (saving) return;
+      const same = selected?.button === button;
+      for (const b of actions.querySelectorAll('[aria-pressed]')) b.setAttribute("aria-pressed", "false");
+      selected = same ? null : {button, status, number};
+      if (selected) button.setAttribute("aria-pressed", "true");
+      submit.disabled = !selected;
+      submit.textContent = selected ? `제출 · ${number ? number + "번 승인" : status}` : "제출";
+    };
+  };
+  const send = async () => {
+    if (!selected || saving) return;
+    saving = true;
+    submit.disabled = true;
+    submit.textContent = "저장 중…";
+    const {status, number} = selected;
+    const answer = number ? `${number}번${input.value ? " — " + input.value : ""}` : input.value;
+    try {
+      await save(file, item.id, status, answer, thread);
+    } finally {
+      saving = false;
+      submit.disabled = false;
+      submit.textContent = `제출 · ${number ? number + "번 승인" : status}`;
+    }
+  };
+  submit.onclick = send;
+  input.onkeydown = event => {
+    if (event.key === "Enter" && selected) { event.preventDefault(); send(); }
+  };
+  if (body.choices.length) {
+    for (const choice of body.choices) {
+      const recommended = body.recommendation?.number === choice.number;
+      const button = el("button", "choice" + (recommended ? " recommended" : ""));
+      button.append(el("span", null, `${recommended ? "★ " : ""}${choice.number}) ${choice.label}`));
+      if (body.impacts.has(choice.number))
+        button.append(el("span", "choice-impact", body.impacts.get(choice.number)));
+      pick(button, "승인", choice.number);
+      choices.append(button);
+    }
+  } else {
+    const approve = el("button", "승인", "승인");
+    pick(approve, "승인");
+    choices.append(approve);
+  }
+  actions.append(choices);
+  response.append(input, submit);
+  for (const status of ["거절", "보류"]) {
+    const button = el("button", status, status);
+    pick(button, status);
+    response.append(button);
+  }
+  actions.append(response);
+  if (isOpen) conversation.append(actions);
+
+  if (item.answer || ["승인", "거절", "보류"].includes(item.status))
+    conversation.append(el("div", "bubble reply", item.status + (item.answer ? " · " + item.answer : "")));
+  if (item.status === "승인" || item.status === "거절") {
+    const applied = el("div", "bubble small");
+    if (item.applied) applied.textContent = "반영했습니다: " + item.applied;
+    else applied.append(el("span", "pending", "세션 반영 대기"));
+    conversation.append(applied);
+  }
+  if (!isOpen) {
+    const change = el("details", "change-answer");
+    change.append(el("summary", null, "답 바꾸기"), actions);
+    conversation.append(change);
+  }
+  thread.append(speaker, conversation);
+  return thread;
+}
+
+async function save(file, id, status, answer, c) {
+  c.querySelector(".err")?.remove();
+  try {
+    const r = await fetch("api/answer", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({file, id, status, answer}),
+    });
+    if (r.ok) return load();
+    c.append(el("div", "err", "저장 실패: " + (await r.text())));
+  } catch (error) {
+    c.append(el("div", "err", "저장 실패: " + error.message));
+  }
+}
+
+async function load() {
+  const data = await (await fetch("api/items")).json();
+  fileColors = new Map(data.map((file, index) => [file.file, index]));
+  const open = [], done = [];
+  for (const f of data) for (const it of f.items)
+    (OPEN.has(it.status) ? open : done).push([it, f.file, f.branch, f.session]);
+  // 차단 먼저, 그 안에서 아직 안 물은 것(대기) 먼저
+  const rank = ([it]) => (it.kind === "차단" ? 0 : 2) + (it.status === "대기" ? 0 : 1);
+  open.sort((a, b) => rank(a) - rank(b));
+
+  groups = {block: open.filter(([it]) => it.kind === "차단"),
+            prov: open.filter(([it]) => it.kind !== "차단"), done};
+  showTab(activeTab);
+
+  const hist = await (await fetch("api/history")).json();
+  document.getElementById("hist").replaceChildren(...hist.map(h => {
+    const tr = el("tr");
+    tr.append(el("td", "nowrap", h.at.replace("T", " ")), el("td", "nowrap", h.branch.replace(/^claude\//, "")),
+              el("td", null, `${h.item_id} [${kindLabel(h.kind)}] ${h.title}`), el("td", "nowrap", h.status), el("td", null, h.answer));
+    return tr;
+  }));
+  document.getElementById("histBox").hidden = !hist.length;
+}
+
+function showTab(tab) {
+  activeTab = tab;
+  const panel = document.getElementById("items");
+  panel.setAttribute("aria-labelledby", `tab-${tab}`);
+  const counts = {all: groups.block.length + groups.prov.length + groups.done.length,
+                  block: groups.block.length, prov: groups.prov.length, done: groups.done.length};
+  for (const button of document.querySelectorAll('[role="tab"]')) {
+    const key = button.dataset.tab;
+    button.textContent = `${TAB_LABELS[key]} ${counts[key]}`;
+    button.setAttribute("aria-selected", String(key === tab));
+    button.tabIndex = key === tab ? 0 : -1;
+  }
+  panel.replaceChildren();
+  for (const key of (tab === "all" ? ["block", "prov", "done"] : [tab])) {
+    if (!groups[key].length) continue;
+    if (tab === "all") panel.append(el("h2", null, TAB_LABELS[key]));
+    for (const row of groups[key])
+      panel.append(card(...row, key !== "done", fileColors.get(row[1])));
+  }
+  if (!panel.childElementCount) panel.append(el("div", "empty", "결정할 항목이 없습니다."));
+}
+
+const tabs = document.getElementById("tabs");
+for (const key of Object.keys(TAB_LABELS)) {
+  const button = el("button");
+  button.type = "button";
+  button.id = `tab-${key}`;
+  button.dataset.tab = key;
+  button.setAttribute("role", "tab");
+  button.setAttribute("aria-controls", "items");
+  button.onclick = () => showTab(key);
+  tabs.append(button);
+}
+tabs.onkeydown = event => {
+  if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+  const buttons = [...tabs.querySelectorAll('[role="tab"]')];
+  const index = buttons.indexOf(document.activeElement);
+  if (index < 0) return;
+  event.preventDefault();
+  const next = buttons[(index + (event.key === "ArrowRight" ? 1 : -1) + buttons.length) % buttons.length];
+  showTab(next.dataset.tab);
+  next.focus();
+};
+
+showTab(activeTab);
+document.getElementById("reload").onclick = load;
+load();
+</script>
+</body>
+</html>

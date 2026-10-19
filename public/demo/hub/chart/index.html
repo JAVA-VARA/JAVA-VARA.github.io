@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko" data-demo="chart">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>차트 검토</title>
+  <script src="scripts/theme.js"></script>
+  <link rel="stylesheet" href="chart_review.css">
+</head>
+<body>
+  <header class="top">
+    <div><h1>차트 검토</h1><div class="ep">
+      <label>배치 <select id="batch"></select></label>
+      <label>에피소드 <select id="episode"></select></label><span id="ep-info"></span><small id="reviewer"></small>
+    </div></div>
+    <div class="bar mode-toggle" role="group" aria-label="검토 모드"><button id="mode-verify" class="btn" aria-label="확인 모드" aria-pressed="true">확인 모드</button><button id="mode-blind" class="btn" aria-label="직접 입력(블라인드)" aria-pressed="false">직접 입력(블라인드)</button></div>
+    <div id="steps" class="steps"><span id="step1" class="step on">① 판단 입력</span> → <span id="step2" class="step">② 공개·비교</span></div>
+    <button id="theme" class="btn" type="button">테마 전환</button>
+  </header>
+  <p id="storage-note" class="note" role="status">서버 저장</p>
+  <p id="status" role="status"></p>
+  <main class="grid">
+    <nav id="variable-list" class="panel scroll" aria-label="변수 목록">
+      <div class="ph"><h2 id="vtitle">변수 목록</h2><div class="prog"><i id="progbar"></i></div>
+        <div class="bar"><span id="pcount"></span><button id="f-un" class="btn" aria-pressed="false">미입력만</button>
+          <button id="f-next" class="btn">다음 미입력 ▶</button><button id="f-fold" class="btn">모두 접기</button></div>
+        <div id="areas" class="bar"><button class="btn" data-area="" aria-pressed="true">전체</button>
+          <button class="btn" data-area="preop" aria-pressed="false">PREOP</button><button class="btn" data-area="op" aria-pressed="false">OP</button>
+          <button class="btn" data-area="postop" aria-pressed="false">POSTOP</button><button class="btn" data-area="pathology" aria-pressed="false">병리</button></div>
+      </div><div id="vars"></div>
+    </nav>
+    <section id="doc-panel" class="panel" aria-label="선택 변수의 근거 기록"><div class="ph">
+      <div class="bar"><button id="v-prev" class="btn" aria-label="이전 변수">◀</button><h2 id="doc-title">이 변수의 근거 기록</h2>
+        <button id="v-next" class="btn" aria-label="다음 변수">▶</button>
+        <button id="doc-popout" class="btn" type="button" aria-label="근거 기록지 새 창 열기">새 창</button>
+        <button id="doc-font-minus" class="btn" type="button" aria-label="기록지 글자 줄이기">A−</button>
+        <button id="doc-font-plus" class="btn" type="button" aria-label="기록지 글자 키우기">A+</button></div>
+      <details id="evidence-list-panel" open><summary id="evidence-list-title">근거 목록 (0)</summary>
+        <div id="evidence-list" role="list" aria-labelledby="evidence-list-title"></div></details>
+      <div class="bar"><div id="record-tabs" role="tablist" aria-label="근거 기록지"></div>
+        <label>다른 기록지 ▾ <select id="other-records" aria-label="다른 기록지"></select></label></div>
+      <div class="bar"><button id="evidence-only" class="btn" aria-pressed="false">근거 있는 기록만</button>
+        <button id="e-prev" class="btn">◀ 이전 근거</button><button id="e-next" class="btn">다음 근거 ▶</button>
+        <button id="sentences" class="btn" aria-pressed="false">강조 문장만 보기</button></div>
+      <p id="evidence-note" class="hint" role="status"></p>
+      <p id="read-status" class="hint" role="status"></p>
+      <p id="adoption-status" class="hint" role="status"></p>
+      <p id="record-hint" class="hint">색칠된 낱말을 누르면 그 변수가 선택됩니다. 근거 목록의 줄을 누르면 해당 위치로 이동합니다. 긴 숫자는 클릭하면 펼쳐집니다.</p></div>
+      <div id="doc" class="doc scroll" role="tabpanel" aria-label="근거 기록 본문"></div>
+    </section>
+    <aside id="side" class="panel scroll" aria-label="변수 판단 패널">
+      <div class="ph"><h2 id="judgment-title">판단 입력</h2></div><div id="judgment"></div>
+    </aside>
+  </main>
+  <section class="panel sum"><div class="sum-h"><h2>에피소드 요약</h2><div class="vrow"><span id="prog"></span>
+    <button id="f-bad" class="btn" hidden aria-pressed="false">불일치만</button><button id="reveal" class="btn primary" disabled>자동 판정 공개</button>
+  </div></div><div class="tw"><table><thead><tr><th>변수</th><th id="col-mine">내 판단</th><th id="col-auto">자동 판정</th><th id="col-llm" hidden>LLM</th><th id="col-state">비교</th></tr></thead><tbody id="matrix"></tbody></table></div>
+  <div class="sum-h"><button id="download" class="btn" disabled>JSON 내려받기</button></div></section>
+  <script src="chart-demo-api.js"></script><script src="chart_review_logic.js"></script><script src="chart_review.js"></script>
+</body>
+</html>

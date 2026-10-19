@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>데이터 추출 워크플로우</title>
+<script src="../scripts/theme.js"></script>
+<style>
+:root {
+  color-scheme: light;
+  --bg:#f4f7f8; --panel:#fff; --ink:#173044; --muted:#586f78;
+  --line:#d8e1e7; --accent:#11786f; --warn:#a62626; --warn-bg:#fdeeee;
+  --code:#edf2f5;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:#111418; --panel:#1b2026; --ink:#e6e8ec; --muted:#a5adb6;
+  --line:#343b44; --accent:#7fd4bd; --warn:#ff8a80; --warn-bg:#3a1d1b;
+  --code:#26313b;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.5 system-ui,"Malgun Gothic",sans-serif; }
+.wrap { width:100%; margin:0 auto; padding:12px 16px 32px; }
+h1 { margin:0; font-size:20px; }
+.lead { margin:2px 0 0; color:var(--muted); }
+h2 { margin:16px 0 8px; font-size:16px; }
+.grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.grid.results { grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:10px; }
+.card { padding:12px; border:1px solid var(--line); border-radius:8px; background:var(--panel); min-width:0; }
+.card b { display:block; margin-bottom:5px; color:var(--accent); }
+.card p { margin:0; }
+.card small { display:block; margin-top:7px; color:var(--muted); }
+.steps { display:grid; gap:8px; }
+.step { display:grid; grid-template-columns:30px minmax(0,1fr); gap:10px; align-items:start; }
+.number { display:grid; place-items:center; width:28px; height:28px; border-radius:50%; background:var(--accent); color:var(--bg); font-weight:700; }
+.step p { margin:2px 0 0; }
+.step span { color:var(--muted); }
+.rule { border-left:3px solid var(--warn); background:var(--warn-bg); padding:10px 12px; border-radius:0 8px 8px 0; }
+.rule p { margin:0; }
+.rule p+p { margin-top:7px; }
+code,pre { font-family:Consolas,"Cascadia Mono",monospace; font-size:.88em; }
+code { padding:1px 4px; border-radius:4px; background:var(--code); overflow-wrap:anywhere; }
+details { margin-top:16px; border:1px solid var(--line); border-radius:8px; background:var(--panel); }
+summary { cursor:pointer; padding:10px 12px; font-weight:700; }
+summary:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.commands { padding:0 12px 12px; }
+.commands p { margin:10px 0 5px; color:var(--muted); }
+pre { overflow:auto; margin:0; padding:10px 12px; border-radius:6px; background:var(--code); }
+.foot { margin:12px 0 0; color:var(--muted); font-size:13px; }
+@media(max-width:720px) { .wrap { padding:12px 10px 24px; } .grid,.grid.results { grid-template-columns:1fr; } }
+@media print { body { background:#fff; color:#111; } details { display:none; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <h1>전향 연구 데이터 추출</h1>
+    <p class="lead">14일마다 수술 전·후를 통합한 CDW 요청 명단을 만들고, 받은 원천자료를 사전점검 후 처리해 결과를 확인합니다.</p>
+  </header>
+  <h2>격주 통합 추출 규칙</h2>
+  <div class="grid">
+    <div class="card"><b>언제·무엇을</b><p>14일마다(금요일 08:00) 수술 전·후를 한 번에 요청합니다. CDW 시트도 구분 없이 한꺼번에 뽑습니다.</p><small>명단은 작업 스케줄러가 자동으로 만들고 팝업으로 알립니다. 수동 실행은 <code>python -m scripts.prepare_extraction</code>.</small></div>
+    <div class="card"><b>누가 대상인가</b><p>수술 3일 뒤부터 명단에 오릅니다. 수술 전이 미완료이거나, POD45 이상인데 수술 후가 미완료인 건이 대상입니다.</p><small>수술 전·후가 모두 완료(Y)면 대상에서 빠집니다. 취소 수술은 제외합니다.</small></div>
+    <div class="card"><b>단계</b><p>POD45 미만은 수술 전·수술 중(<code>preop.</code>·<code>op.</code>)까지, POD45 이상은 병리·수술 후·합병증까지 처리합니다.</p><small>대상 명단의 <code>단계</code> 열(<code>pre</code> / <code>full</code>)로 구분합니다.</small></div>
+    <div class="card"><b>PASS 와 재요청</b><p>RID 미매칭·수술기록 미작성·변수 오류는 PASS 로 두고 다음 배치에 다시 요청합니다. 연속 3회 PASS 면 검토 파일로 올립니다.</p><small><code>data/review/extraction/&lt;배치&gt;_PASS_검토.csv</code></small></div>
+    <div class="card"><b>재추출 자료</b><p>같은 키는 이전 버전을 보존한 채 새 값으로 교체합니다. 조회 기간은 환자별 "전체~추출일"이며 적재는 자르지 않습니다.</p><small>변경·삭제 의심은 환자번호 기준으로 <code>data/working/change_history/&lt;배치&gt;.xlsx</code> 에 기록합니다.</small></div>
+    <div class="card"><b>분기 확정 재추출</b><p>완료된 건도 분기마다 1회 다시 받아 원천 수정을 반영합니다. 스케줄러가 통합 명단과 함께 만듭니다.</p><small>수동 실행은 <code>python -m scripts.prepare_extraction --recheck</code>.</small></div>
+  </div>
+  <h2>준비할 자료</h2>
+  <div class="grid">
+    <div class="card"><b>전향 등록 마스터</b><p>연구 대상자 등록번호와 RID 연결을 관리하는 명단입니다.</p><small><code>data/linkage/hospital/incoming/</code>에서 관리합니다. 매 배치에 복사하지 않습니다.</small></div>
+    <div class="card"><b>이번 배치 대상자 명단</b><p>이번에 추출할 환자번호와 수술일 목록입니다.</p><small>배치 폴더의 <code>target_episodes.xlsx</code>와 <code>batch.json</code>에 지정합니다.</small></div>
+    <div class="card"><b>CDW 원천자료</b><p>대상 에피소드의 등록자료, 수술일정, 필요한 검사·기록 자료입니다.</p><small><code>ENROLLMENT_LIST.xlsx</code>와 수술일정 등 요구 원천을 배치 폴더에 둡니다.</small></div>
+  </div>
+  <h2>배치 처리 순서</h2>
+  <div class="steps">
+    <div class="card step"><div class="number">1</div><p><strong>전향 등록 마스터를 갱신합니다.</strong><br><span>등록번호와 RID 연결은 공통 연결표에서 관리합니다.</span></p></div>
+    <div class="card step"><div class="number">2</div><p><strong>생성된 <code>CDW_REQUEST.xlsx</code>를 CDW에 올리고, 받은 원천자료를 <code>data/inbox/YYYYMMDD_NN/</code>에 넣습니다.</strong><br><span>대상 명단(<code>target_episodes.xlsx</code>)은 명단 생성 때 같은 배치 폴더에 만들어집니다. 시트는 수술 전·후를 나누지 않고 한 번에 뽑습니다.</span></p></div>
+    <div class="card step"><div class="number">3</div><p><strong>사전점검 후 배치를 실행합니다.</strong><br><span>적재 뒤 등록번호를 RID와 연결하고, 연결 또는 대상 에피소드가 불확실하면 검토 대상으로 멈춥니다.</span></p></div>
+    <div class="card step"><div class="number">4</div><p><strong>검토 항목을 확인하고 eCRF 결과를 확인합니다.</strong><br><span>통과한 결과는 출력 폴더에 생성됩니다. 파일을 넣는 것만으로 자동 제출되지는 않습니다. 근거가 같은 항목의 이전 승인은 자동으로 이어지고, 근거가 달라지면 다시 검토로 돌아옵니다.</span></p></div>
+  </div>
+  <div class="rule" style="margin-top:12px">
+    <p><strong><code>enroll_list</code>는 입력 파일이 아닙니다.</strong> 파이프라인이 만드는 뷰입니다. 다만 CDW 원천인 <code>ENROLLMENT_LIST.xlsx</code>는 배치 입력으로 필요합니다.</p>
+  </div>
+  <h2>점검과 결과 위치</h2>
+  <div class="card"><b>CDW 업로드용 Excel 생성</b><p>통합(기본): <code>python -m scripts.prepare_extraction</code><br>분기 확정 재추출: <code>python -m scripts.prepare_extraction --recheck</code></p><small>첫 시트 A열에 헤더 없는 환자번호 명단(<code>data/working/cdw_requests/&lt;배치&gt;/CDW_REQUEST.xlsx</code>)을 생성합니다. 명령이 반환한 파일을 CDW에 올리고, 추출본은 반환한 배치 폴더에 넣습니다. 동의서 마스터의 수술 전·수술 후 Y/N은 에피소드별 완료 기록(매칭·수술기록·변수 실행 성공)으로 갱신되며, PASS 건은 완료로 세지 않습니다. 이전 방식인 <code>--phase pre</code>·<code>--phase post</code> 단독 실행은 호환용으로만 남아 있습니다.</small></div>
+  <div class="grid results">
+    <div class="card"><b>사전점검</b><p><code>python -m scripts.preflight_batch --batch-id YYYYMMDD_NN</code></p><small>필수 명단·원천·파일 구성을 확인합니다.</small></div>
+    <div class="card"><b>결과</b><p>검토 자료는 <code>data/review/</code>, 추출 결과는 <code>data/output/</code>, 변경 이력은 <code>data/working/change_history/</code>에서 확인합니다.</p></div>
+  </div>
+  <p class="foot">배치 명세: <code>docs/INBOX_BATCH_CONTRACT.md</code> · 원천 파일명: <code>docs/INBOX_SHEET_MAPPING.md</code></p>
+</main>
+</body>
+</html>

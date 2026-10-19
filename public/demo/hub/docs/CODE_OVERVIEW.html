@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>코드 구조</title>
+<script src="../scripts/theme.js"></script>
+<style>
+
+:root {
+  color-scheme: light;
+  --bg:#f4f7f8; --panel:#fff; --ink:#173044; --muted:#586f78;
+  --line:#d8e1e7; --accent:#11786f; --warn:#a62626; --warn-bg:#fdeeee;
+  --code:#edf2f5;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:#111418; --panel:#1b2026; --ink:#e6e8ec; --muted:#a5adb6;
+  --line:#343b44; --accent:#7fd4bd; --warn:#ff8a80; --warn-bg:#3a1d1b;
+  --code:#26313b;
+}
+
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.5 system-ui,"Malgun Gothic",sans-serif; }
+.wrap { width:100%; margin:0 auto; padding:12px 16px 32px; overflow-wrap:anywhere; }
+h1 { margin:0; font-size:20px; }
+.lead,.meta { margin:2px 0 0; color:var(--muted); }
+.meta { font-size:12px; }
+h2 { margin:16px 0 8px; font-size:16px; }
+h3,p { margin:0; }
+h3 { font-size:14px; color:var(--accent); margin-bottom:6px; }
+code { font-family:Consolas,"Cascadia Mono",monospace; font-size:.88em; padding:1px 4px; border-radius:4px; background:var(--code); overflow-wrap:anywhere; }
+a { color:var(--accent); }
+a:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+.card { min-width:0; padding:10px; border:1px solid var(--line); border-radius:8px; background:var(--panel); }
+.flow { display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); gap:18px; list-style:none; padding:0; margin:0; }
+.flow .card { position:relative; font-size:13px; }
+.flow .card:not(:last-child)::after { content:'→'; position:absolute; left:100%; top:18px; width:18px; text-align:center; color:var(--accent); font-weight:700; }
+.number { display:inline-grid; place-items:center; width:22px; height:22px; border-radius:50%; background:var(--accent); color:var(--bg); font-weight:700; font-size:12px; }
+small { display:block; margin-top:8px; color:var(--muted); }
+.boundary { display:block; margin-top:8px; padding:4px; border-top:2px dashed var(--warn); color:var(--warn); font-size:12px; font-weight:700; }
+.review-loop { display:grid; grid-template-columns:minmax(0,1fr) 2fr; gap:12px; align-items:center; border:2px solid var(--accent); background:var(--panel); border-radius:8px; padding:10px 12px; margin-top:12px; }
+.review-loop strong { color:var(--accent); }
+.review-path { display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
+.review-path span { min-width:0; }
+.entries { margin-top:8px; font-size:12px; color:var(--muted); }
+.lower { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; }
+.layers { display:grid; gap:4px; margin:8px 0; padding:0; list-style:none; }
+.layers li { padding:6px 10px; }
+.layers li:not(:first-child)::before { content:'↑ '; color:var(--accent); font-weight:700; }
+.direction { font-weight:700; color:var(--accent); }
+.files { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; margin:8px 0; }
+.files .card { position:relative; }
+.files .card:not(:last-child)::after { content:'→'; position:absolute; left:100%; top:10px; width:18px; color:var(--accent); text-align:center; }
+.rule { margin-bottom:8px; border-left:3px solid var(--warn); background:var(--warn-bg); padding:8px 10px; }
+.locations { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.locations .number { margin-right:3px; }
+@media(max-width:720px) {
+ .wrap { padding:12px 10px 24px; }
+ .flow,.files,.lower,.review-loop { grid-template-columns:1fr; }
+ .flow { gap:20px; }
+ .flow .card { display:grid; grid-template-columns:110px minmax(0,1fr); gap:0 8px; }
+ .flow h3 { grid-row:1 / 3; }
+ .flow small { grid-column:2; margin-top:4px; }
+ .boundary { grid-column:1 / -1; }
+ .flow .card:not(:last-child)::after,.files .card:not(:last-child)::after { content:'↓'; left:0; top:100%; width:100%; height:20px; }
+ .locations { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+.preprocess-layout { display:grid; grid-template-columns:minmax(0,3fr) minmax(220px,1fr); gap:16px; align-items:start; }
+.steps { list-style:none; padding:0; margin:0; display:grid; gap:20px; }
+.steps > li { position:relative; border-left:4px solid var(--muted); }
+.steps > li:not(:last-child)::after { content:'↓'; position:absolute; top:100%; left:16px; color:var(--accent); }
+.steps > .owned { border-left-color:var(--accent); background:color-mix(in srgb,var(--accent) 9%,var(--panel)); }
+.steps h3 { display:flex; align-items:center; gap:8px; }
+.query-shapes,.split,.contracts,.tree-branches { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:10px; }
+.query-shapes > div,.split > div { padding:8px; border:1px solid var(--line); border-radius:6px; }
+.split { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.split > div:last-child { color:var(--warn); }
+.ownership { display:grid; gap:12px; }
+.ownership .variable { border-left:4px solid var(--accent); }
+.ownership .assembly { border-left:4px solid var(--muted); }
+.chain { margin:10px 0; }
+.layer-svg { display:block; width:100%; max-width:1000px; margin:0 auto; height:auto; }
+.layer-svg .box { fill:var(--panel); stroke:var(--line); stroke-width:2; }
+.layer-svg text { fill:var(--ink); font-family:system-ui,"Malgun Gothic",sans-serif; font-size:16px; }
+.layer-svg .title { fill:var(--accent); font-size:20px; font-weight:700; }
+.layer-svg .edge { fill:none; stroke:var(--accent); stroke-width:2; marker-end:url(#arrow); }
+.layer-svg .injection { fill:none; stroke:var(--muted); stroke-width:2; stroke-dasharray:5 5; }
+.layer-svg .forbidden { fill:none; stroke:var(--warn); stroke-width:2; stroke-dasharray:6 5; }
+.layer-svg .warning { fill:var(--warn); }
+.layer-mobile { display:none; }
+.contracts { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.tree-root { text-align:center; margin-top:12px; border:2px solid var(--accent); }
+.tree-branches { gap:20px; padding-top:22px; position:relative; }
+.tree-branches::before { content:''; position:absolute; top:10px; left:16.66%; right:16.66%; border-top:2px solid var(--accent); }
+.tree-root::after { content:'↓'; display:block; color:var(--accent); }
+.branch { min-width:0; position:relative; display:grid; gap:22px; }
+.branch::before { content:'↓'; position:absolute; top:-22px; width:100%; text-align:center; color:var(--accent); }
+.branch .card { position:relative; }
+.branch .card:first-child::after { content:'↓'; position:absolute; top:100%; left:50%; color:var(--accent); }
+.others { margin:12px 0; }
+.others p + p { margin-top:6px; }
+.table-scroll { max-width:100%; min-width:0; overflow-x:auto; margin:10px 0; border:1px solid var(--line); border-radius:8px; }
+.heatmap { width:100%; min-width:720px; border-collapse:collapse; background:var(--panel); }
+.heatmap th,.heatmap td { padding:9px; border-bottom:1px solid var(--line); text-align:center; }
+.heatmap th:first-child { text-align:left; width:43%; }
+.heatmap small { margin-top:2px; font-weight:400; }
+.heatmap td { background:color-mix(in srgb,var(--accent) var(--heat,0%),var(--panel)); color:var(--ink); font-weight:700; }
+.reading { padding-left:24px; }
+.reading li { margin:6px 0; }
+@media(max-width:720px) {
+ .preprocess-layout,.query-shapes,.contracts,.tree-branches { grid-template-columns:1fr; }
+ .layer-svg { display:none; }
+ .layer-mobile { display:grid; gap:8px; }
+ .layer-mobile .down { text-align:center; color:var(--accent); font-weight:700; }
+ .tree-branches { padding-top:0; }
+ .tree-branches::before,.branch::before { display:none; }
+ .branch { gap:22px; }
+}
+</style>
+</head>
+<body><main class="wrap">
+<header><h1>코드 구조</h1><p class="lead">CDW raw 배치가 eCRF 업로드 파일이 되기까지</p><p class="meta">main · 3a02f26 · 코드 기준</p></header>
+<section aria-labelledby="flow-title"><h2 id="flow-title">A · 전체 흐름</h2><ol class="flow">
+<li class="card" id="step-1"><h3><span class="number">1</span> 투입</h3><p>사람이 CDW raw 배치를 <code>data/inbox/</code> 에 올린다</p><small><code>pipeline/inbox_watch.py</code></small></li>
+<li class="card" id="step-2"><h3><span class="number">2</span> 사전 점검</h3><p>SQL이 쓸 원천 테이블·열이 갖춰졌는지 변경 없이 검사</p><small><code>pipeline/preflight.py</code></small></li>
+<li class="card" id="step-3"><h3><span class="number">3</span> 적재</h3><p>월별 배치를 공용 DuckDB(<code>data/database/hospital_raw.duckdb</code>)와 에피소드로 쌓음</p><small><code>pipeline/ingest.py</code></small></li>
+<li class="card" id="step-4"><h3><span class="number">4</span> 연결</h3><p>등록번호를 RID 로 바꾸고 <strong>등록번호 열을 제거한다</strong>. 이 뒤 단계는 등록번호로 일하지 않는다(검토·보관용 식별정보는 별도 유지)</p><small><code>pipeline/stages/s2_link.py</code></small><span class="boundary">등록번호가 존재하는 마지막 지점</span></li>
+<li class="card" id="step-5"><h3><span class="number">5</span> 에피소드 표</h3><p>수술 에피소드(<code>target_episode</code>) 표를 만들어 모든 SQL의 기준으로 제공</p><small><code>pipeline/workflow.py</code></small></li>
+<li class="card" id="step-6"><h3><span class="number">6</span> 변수별 전처리</h3><p>변수 하나씩 추출→전처리→판정. 하나가 실패해도 나머지는 계속 돌지만, 실패가 있으면 8번 반출은 시작하지 않는다</p><small><code>pipeline/run.py</code> · <code>pipeline/stages/s3_preprocess.py</code> · <a href="#preprocess-title">자세히: B</a></small></li>
+<li class="card" id="step-7"><h3><span class="number">7</span> 검토 분리</h3><p>정상은 바로 반출로, 이상이 걸린 에피소드는 <code>data/review/</code> 로 격리하고 이번 반출에서 제외</p><small><code>pipeline/stages/s4_review.py</code></small></li>
+<li class="card" id="step-8"><h3><span class="number">8</span> 반출</h3><p>정상 결과를 eCRF 빈 양식에 채워 업로드용 Excel 생성</p><small><code>pipeline/stages/s5_publish.py</code> · <code>exporters/ecrf_excel.py</code></small></li>
+<li class="card" id="step-9"><h3><span class="number">9</span> 보관</h3><p>성공한 원본 배치를 <code>data/raw_archive/</code> 로 옮겨 불변 보관</p><small><code>pipeline/workflow.py</code></small></li>
+</ol>
+<aside class="review-loop" aria-label="7번 검토 분리에서 8번 반출로 되돌아오는 사람 검토 고리">
+<div><strong>⑦ ↘ 사람 검토 ↗ ⑧</strong><p>검토가 파이프라인을 막지 않는다</p><small>정상 건은 이 고리를 기다리지 않는다.</small></div>
+<div class="review-path"><span>이상 건</span><b aria-hidden="true">→</b><span>사람이 허브 “검토 항목” 탭에서 답 저장</span><b aria-hidden="true">→</b><span>답을 반영해 <a href="#step-8">8번 반출</a>을 다시 실행<br><code>scripts/publish_review.py</code></span><b aria-hidden="true">↩</b></div>
+</aside>
+<p class="entries">진입점: <code>python -m scripts.run_workflow</code> (배치 전체) · <code>python -m scripts.run_variable</code> (변수 하나) · <code>python -m scripts.publish_review</code> (검토 반영)</p></section>
+<section aria-labelledby="preprocess-title"><h2 id="preprocess-title">B · 변수별 전처리 — 변수 하나가 처리되는 길</h2><div class="preprocess-layout"><ol class="steps"><li class="card "><h3><span class="number">1</span> 적용 병원 확인</h3><p>대상 병원이 아니면 오류로 기록한다.</p><small>담당: <code>spec.applies_to(hospital)</code></small></li><li class="card "><h3><span class="number">2</span> 원천 추출</h3><p>변수 정의에 적힌 쿼리를 실행한다. 구성항목과 여러 원천은 함께 쓸 수도 있다.</p><small>담당: <code>extract()</code></small><div class="query-shapes"><div><code>query.sql</code><p>단일 쿼리 · 대부분의 변수</p></div><div><code>components[].query</code><p>eCRF 자동계산 구성항목</p></div><div><code>queries.&lt;이름&gt;</code><p>한 판정의 여러 원천</p></div></div></li><li class="card "><h3><span class="number">3</span> 수술별 RID로 재연결</h3><p>episode_index가 주입된 경우 환자 RID를 수술별 처리 RID로 바꾼다. query_roles가 reference인 이름 붙은 참조표는 제외한다.</p><small>담당: <code>rekey_extraction()</code></small></li><li class="card "><h3><span class="number">4</span> 실행 맥락 조립</h3><p>hospital·study·run_id·sql_runner·llm_client·shared(components, queries, variable_dir)·spec을 주입한다. 변수 코드는 infra를 직접 부르지 않는다.</p><small>담당: <code>RunContext</code></small></li><li class="card owned"><h3><span class="number">5</span> 변수 전처리</h3><p>추출표를 변수 정의에 맞는 처리표로 바꾼다.</p><small>담당: <code>spec.processor().run(frame, context)</code></small></li><li class="card owned"><h3><span class="number">6</span> 검토 행 판정</h3><p>처리표에서 검토할 행을 반환한다. 검증기가 없으면 전부 통과한다.</p><small>담당: <code>spec.validator().check(processed, context)</code></small></li><li class="card "><h3><span class="number">7</span> 정상과 검토 분리</h3><p>키 컬럼으로 검토 행을 통과분에서 뺀다. 검토 행이 있는데 키를 못 찾으면 안전하게 전부 검토로 보낸다.</p><small>담당: <code>run_variable() / _key_columns()</code></small><div class="split"><div>↘ <code>passed</code> → 반출</div><div>↙ <code>review</code> → 검토</div></div></li></ol><aside class="ownership" aria-label="처리 책임 구분"><div class="card variable"><h3>변수가 직접 하는 일</h3><p>5 · 전처리 <code>Processor.run</code><br>6 · 검토 판정 <code>Validator.check</code></p><small>강조색 · 변수 폴더의 책임</small></div><div class="card assembly"><h3>파이프라인이 해 주는 일</h3><p>1 · 병원 확인<br>2 · 추출<br>3 · RID 재연결<br>4 · 자원 주입<br>7 · 정상과 검토 분리</p><small>회색 테두리 · 조립과 안전한 분리</small></div></aside></div><p class="chain"><code>run_batch_workflow → run_study → run_variable → extract / rekey_extraction → Processor.run → Validator.check</code></p><p class="rule">예외는 error 로 기록하고 다음 변수로 — 단, 실패가 하나라도 있으면 eCRF 반출은 시작하지 않는다</p></section>
+<section aria-labelledby="layers-title"><h2 id="layers-title">C · 코드의 층 — 한눈에 보이는 그림</h2>
+<svg class="layer-svg" viewBox="0 0 1000 560" role="img" aria-labelledby="layer-label layer-desc"><title id="layer-label">위에서 아래로 의존하는 코드의 층</title><desc id="layer-desc">pipeline에서 variables와 infra, domain을 조립하고 exporters를 호출한다. variables는 domain과 core에 의존한다. infra와 domain은 core에 의존한다. 필요한 외부 자원은 RunContext로 주입한다. core에서 variables로 역방향 import는 금지한다.</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"/></marker></defs>
+<rect class="box" x="100" y="20" width="600" height="70" rx="8"/><text class="title" x="116" y="48">pipeline · 조립</text><text x="116" y="74">run.py · stages/s3_preprocess.py</text><rect class="box" x="760" y="20" width="230" height="85" rx="8"/><text class="title" x="776" y="48">exporters · 산출</text><text x="776" y="74">ecrf_excel.py</text><rect class="box" x="100" y="150" width="600" height="95" rx="8"/><text class="title" x="116" y="178">variables · 112개 클래스</text><text x="116" y="204">preop · op · postop · pathology · complication</text><rect class="box" x="100" y="315" width="270" height="75" rx="8"/><text class="title" x="116" y="343">infra · DB·raw·LLM</text><text x="116" y="369">db/ · raw/ · llm/</text><rect class="box" x="430" y="315" width="270" height="75" rx="8"/><text class="title" x="446" y="343">domain · 공통 로직</text><text x="446" y="369">linkage/ · processors/</text><rect class="box" x="100" y="465" width="600" height="75" rx="8"/><text class="title" x="116" y="493">core · 계약·설정</text><text x="116" y="519">contracts.py · spec.py · config.py</text><text x="116" y="229">variables/&lt;그룹&gt;/&lt;변수&gt;/ · _template 포함</text>
+<path class="edge" d="M400 90 V150"/><path class="edge" d="M700 55 H760"/>
+<path class="edge" d="M100 55 H60 V352 H100"/><text x="5" y="292">조립</text>
+<path class="edge" d="M565 245 V315"/><path class="edge" d="M235 390 V465"/><path class="edge" d="M565 390 V465"/>
+<path class="edge" d="M700 90 H728 V352 H700"/>
+<path class="edge" d="M700 215 H742 V502 H700"/><text x="756" y="451">core에도 의존</text>
+<path class="injection" d="M235 315 V278 H400 V245"/><text x="108" y="269">RunContext(주입)</text><text x="108" y="300">필요한 것은 context로 주입</text>
+<path class="forbidden" d="M110 465 H24 V197 H100"/><text class="warning" x="12" y="425">✕</text><text class="warning" x="110" y="447">core → variables 금지</text>
+<text x="760" y="119">실선 화살표 = import 의존</text><text x="760" y="145">점선 = 자원 주입</text></svg>
+<div class="layer-mobile"><div class="card"><h3>pipeline · 조립</h3><p><code>run.py · stages/s3_preprocess.py</code></p><p>→ <code>exporters/ecrf_excel.py</code> · 산출 어댑터 호출</p><small>infra·domain·core도 조립한다</small></div><div class="down">↓ import 의존</div><div class="card"><h3>variables · 112개 클래스</h3><p><code>variables/&lt;그룹&gt;/&lt;변수&gt;/</code></p><p>preop · op · postop · pathology · complication<br>_template 포함</p><small>domain·core에 의존 · infra 직접 호출 금지</small></div><div class="down">↓ domain·core로 의존</div><div class="card"><h3>infra · DB·raw·LLM</h3><p><code>db/ · raw/ · llm/</code></p><small>필요한 것은 RunContext(주입)로 변수에 전달 · 직접 import 선 없음</small></div><div class="card"><h3>domain · RID 연결·공통 전처리</h3><p><code>linkage/ · processors/</code></p></div><div class="down">↓ infra·domain → core</div><div class="card"><h3>core · 계약·설정</h3><p><code>contracts.py · spec.py · config.py</code></p><p style="color:var(--warn)">✕ core → variables 금지</p></div></div>
+<p class="direction"><code>core ← infra/domain ← variables ← pipeline → exporters</code></p><p><strong>역방향 import 금지.</strong> 화살표는 import 한다(의존한다)는 방향이다.</p></section>
+<section aria-labelledby="abstraction-title"><h2 id="abstraction-title">D · 추상화와 공통 로직 — 누가 누구의 추상화인가</h2><h3>계층 트리 · 계약 → 공통 구현 → 변수 구현</h3><p>1단 · 계약 <code>core/contracts.py</code></p><div class="contracts"><div class="card"><strong><code>BaseProcessor</code></strong><p><code>run()</code></p></div><div class="card"><strong><code>BaseValidator</code></strong><p><code>check()</code></p></div><div class="card"><strong><code>BaseClassifier</code></strong><p><code>classify()</code></p></div><div class="card"><strong><code>BaseExporter</code></strong><p><code>export()</code></p></div></div><div class="card tree-root"><strong><code>BaseProcessor</code></strong><p>전처리 계약의 세 갈래</p></div><div class="tree-branches"><div class="branch"><div class="card"><h3>2단 · 공통 구현</h3><code>RecordOccurrence</code><p>검증: <code>OccurrenceValidator</code></p><small><code>domain/processors/occurrence.py</code></small></div><div class="card"><h3>3단 · 변수 구현</h3><p>합병증 36개</p><code>variables/complication/</code></div></div><div class="branch"><div class="card"><h3>2단 · 공통 구현</h3><code>KeywordFinding</code><p>검증: <code>KeywordFindingValidator</code></p><small><code>domain/processors/op_note.py</code></small></div><div class="card"><h3>3단 · 변수 구현</h3><p>op 2개</p><code>variables/op/</code></div></div><div class="branch"><div class="card"><h3>2단 · 공통 구현을 거치지 않음</h3><p><code>BaseProcessor</code>를 직접 구현</p><small>계약에서 변수로 바로 연결</small></div><div class="card"><h3>3단 · 직접 구현 74개</h3><p>preop 25 · op 18 · postop 16<br>pathology 12 · complication 2<br><code>_template</code> 1</p></div></div></div><p class="chain">검증 계약: <code>BaseValidator</code> → <code>OccurrenceValidator</code> 36개 / <code>KeywordFindingValidator</code> 2개 / 변수 직접 구현 70개. 변수 검증기 총 108개이며, 검증기는 선택 사항이다. <code>BaseValidator</code> 직접 상속 72개는 공통 검증기 2개까지 포함한 수다.</p>
+<aside class="card others"><h3>그 밖의 추상화 → 구현</h3><p><code>SqlRunner</code> → <code>DuckDBRunner · MySQLRunner · FrameRunner</code></p><p><code>LinkageStore</code> → <code>MemoryLinkageStore · ExcelLinkageStore · DbLinkageStore</code></p><p><code>BaseClassifier</code> → <code>KeywordClassifier · CachedClassifier</code> / <code>BaseExporter</code> → <code>EcrfExcelExporter</code></p></aside>
+<h3>공통 모듈 사용 표</h3><p id="heatmap-note">숫자 = 그 공통 모듈을 import 하는 변수 preprocess.py 파일 수</p><div class="table-scroll" tabindex="0" role="region" aria-label="공통 모듈 사용 표, 좁은 화면에서는 좌우로 이동" aria-describedby="heatmap-note"><table class="heatmap"><thead><tr><th scope="col">공통 모듈 · 설명</th><th scope="col">preop</th><th scope="col">op</th><th scope="col">postop</th><th scope="col">pathology</th><th scope="col">complication</th><th scope="col">합계</th></tr></thead><tbody><tr><th scope="row"><code>pathology_text</code><small>병리 판독문 기반 변수의 공통 입출력 보조 함수.</small></th><td style="--heat:22%">21</td><td style="--heat:22%">18</td><td style="--heat:22%">16</td><td style="--heat:14%">12</td><td style="--heat:0%"></td><td style="--heat:30%">67</td></tr><tr><th scope="row"><code>occurrence</code><small>기록 한 건이 곧 발생 근거인 변수의 공통 전처리.</small></th><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:30%">36</td><td style="--heat:30%">36</td></tr><tr><th scope="row"><code>preop_test</code><small>수술 전 검사(P@P_PRE_TEST) 변수의 공통 보조 함수.</small></th><td style="--heat:14%">6</td><td style="--heat:14%">12</td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:22%">18</td></tr><tr><th scope="row"><code>op_form</code><small>수술 시트(P@P_OP) 변수의 공통 보조 함수.</small></th><td style="--heat:0%"></td><td style="--heat:14%">14</td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:14%">14</td></tr><tr><th scope="row"><code>evidence</code><small>근거 프레임을 전처리기가 읽을 수 있는 모양으로 맞춘다.</small></th><td style="--heat:8%">4</td><td style="--heat:8%">2</td><td style="--heat:8%">4</td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:14%">10</td></tr><tr><th scope="row"><code>op_note</code><small>수술기록(op note) 원문에서 소견을 읽는 공통 전처리.</small></th><td style="--heat:0%"></td><td style="--heat:8%">4</td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:8%">4</td></tr><tr><th scope="row"><code>history_text</code><small>과거 이력 자유서술에서 항목을 뽑아내는 공통 전처리.</small></th><td style="--heat:8%">4</td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:8%">4</td></tr><tr><th scope="row"><code>lab</code><small>진단검사 결과의 공통 전처리.</small></th><td style="--heat:8%">1</td><td style="--heat:0%"></td><td style="--heat:8%">1</td><td style="--heat:0%"></td><td style="--heat:0%"></td><td style="--heat:8%">2</td></tr></tbody></table></div><p class="rule"><code>pathology_text</code>는 이름과 달리 병리뿐 아니라 preop·op·postop 전반에서 쓴다.</p><h3>읽는 법</h3><ol class="reading"><li>변수 하나를 고치면 그 변수 폴더만 고친다.</li><li>공통 로직을 고치면 그걸 쓰는 변수들(표의 합계)이 같이 바뀐다 → 고치기 전에 표로 영향 범위를 본다.</li><li>공통 모듈이 필요한 변수가 둘 이상 나오면 <code>domain/processors/</code>로 올린다.</li></ol></section>
+<div class="lower"><section aria-labelledby="variable-title"><h2 id="variable-title">E · 변수 하나는 폴더 하나</h2><p><code>variables/&lt;그룹&gt;/&lt;변수&gt;/</code></p>
+<div class="files">
+<div class="card"><h3><code>spec.yaml</code></h3><p>정의·원천·eCRF 칸·기준값</p></div>
+<div class="card"><h3><code>query.*.sql</code></h3><p>CDW 추출 쿼리</p><small><code>query.sql</code> 또는 <code>query.drug_atc.sql</code></small></div>
+<div class="card"><h3><code>preprocess.py</code></h3><p>전처리 <code>run(df, context)</code></p></div>
+<div class="card"><h3><code>validate.py</code></h3><p>검토 대상 선별(필요한 변수만 둔다)</p></div>
+</div><p>변수 추가 = 폴더 하나 추가. 레지스트리는 spec.yaml 이 있으면 자동 인식</p>
+
+</section><section aria-labelledby="data-title"><h2 id="data-title">F · 데이터는 어디에 있나</h2>
+<p class="rule"><code>data/</code> 는 .gitignore 대상(자리 표시용 .gitkeep 만 예외) — 실데이터는 저장소 밖 취급</p>
+<div class="locations" aria-labelledby="data-title">
+<div class="card"><strong><code>data/inbox/</code></strong><p>투입</p><small>단계 <span class="number">1</span><span class="number">2</span></small></div>
+<div class="card"><strong><code>data/database/</code></strong><p>공용 raw DuckDB</p><small>단계 <span class="number">3</span><span class="number">5</span><span class="number">6</span></small></div>
+<div class="card"><strong><code>data/working/</code></strong><p>변수별 중간 결과 parquet</p><small>단계 <span class="number">6</span></small></div>
+<div class="card"><strong><code>data/review/</code></strong><p>사람 검토 대기</p><small>단계 <span class="number">7</span></small></div>
+<div class="card"><strong><code>data/output/</code></strong><p>최종 eCRF Excel</p><small>단계 <span class="number">8</span></small></div>
+<div class="card"><strong><code>data/raw_archive/</code></strong><p>처리 끝난 원본</p><small>단계 <span class="number">9</span></small></div>
+</div></section></div></main></body></html>

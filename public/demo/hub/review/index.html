@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>검토 항목</title>
+  <script src="../scripts/theme.js"></script>
+  <link rel="stylesheet" href="review.css">
+</head>
+<body>
+  <main>
+    <header><h1>검토 항목</h1><p>근거를 확인하고 eCRF 값을 저장합니다. 데모라 답변은 이 탭에만 남습니다.</p></header>
+    <div class="toolbar">
+      <label>배치 <select id="batch"></select></label>
+      <label>그룹 <select id="group"></select></label>
+      <label>변수 <select id="variable"></select></label>
+      <label>상태 <select id="filter"><option value="pending">미입력</option><option value="saved">저장됨</option><option value="all">전체</option></select></label>
+      <label class="toggle"><input id="chart-undone" type="checkbox">차트 검토 안 한 것만</label>
+      <label>쪽당 <select id="page-size"><option value="20">20</option><option value="50" selected>50</option><option value="100">100</option></select></label>
+      <button id="reload">새로고침</button><button id="publish">답변 반영 Excel 생성</button>
+    </div>
+    <p id="status" role="status"></p>
+    <div class="pager"><button id="previous">이전</button><span id="page-status"></span><button id="next">다음</button></div>
+    <section id="items"></section>
+    <section aria-labelledby="surgery-review-title">
+      <h2 id="surgery-review-title">수술일자 검토</h2>
+      <p>판정은 전향 등록 마스터에 기록됩니다. 저장 후 <code>scripts.run_workflow</code>를 다시 실행하면 반영됩니다.</p>
+      <div id="surgery-items"></div>
+    </section>
+  </main>
+  <script src="review-demo-api.js"></script><script src="review.js"></script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>변수 정의서</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../scripts/theme.js"></script>
+<style>
+:root{color-scheme:light;--ink:#173044;--muted:#586f78;--line:#d8e1e7;--navy:#153b59;--teal:#11786f;--wash:#f4f8fa;--warn:#fff8e7;--bg:#f4f7f8;--panel:#fff}
+:root[data-theme="dark"]{color-scheme:dark;--ink:#e6e8ec;--muted:#a5adb6;--line:#343b44;--navy:#a7d1e8;--teal:#7fd4bd;--wash:#26313b;--warn:#3b3220;--bg:#111418;--panel:#1b2026}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);background:var(--bg);font:14px/1.5 system-ui,"Malgun Gothic",sans-serif}
+header{padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:20px}
+header p{margin:2px 0;color:var(--muted);font-size:.85rem}
+.btn{padding:7px 12px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--navy);font:inherit;cursor:pointer}
+.btn:hover{border-color:var(--teal);background:var(--wash)}
+.workspace{display:grid;grid-template-columns:350px minmax(0,1fr);height:calc(100vh - 140px);margin:0 auto;background:var(--panel)}
+aside,.catalog,main{overflow-y:auto}
+aside,.catalog{border-right:1px solid var(--line)}
+.group-tabs{display:flex;gap:5px;overflow-x:auto;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel)}
+.group-tabs .filter{flex:0 0 auto;width:auto;padding:7px 11px;border:1px solid var(--line);border-radius:18px}
+.group-tabs .filter.active{border-color:var(--teal)}
+.workspace.catalog-collapsed{grid-template-columns:44px minmax(0,1fr)}
+.workspace.catalog-collapsed .catalog>*:not(.pane-title){display:none}
+.workspace.catalog-collapsed .catalog .pane-title{writing-mode:vertical-rl;margin:auto;padding:10px 12px}
+.pane-title{position:sticky;top:0;z-index:1;margin:0;padding:10px 12px;color:var(--navy);background:var(--panel);font-size:.85rem;border-bottom:1px solid var(--line)}
+.filter{display:block;width:100%;padding:7px 12px;border:0;border-left:3px solid transparent;background:var(--panel);text-align:left;font:inherit;cursor:pointer}
+.filter:hover,.concept:hover{background:var(--wash)}
+.filter.active{border-left-color:var(--teal);background:var(--wash);color:var(--teal);font-weight:700}
+.concept{width:100%;padding:9px 12px;border:0;border-bottom:1px solid var(--line);background:var(--panel);text-align:left;cursor:pointer;font:inherit}
+.concept.active{background:var(--wash);box-shadow:inset 3px 0 var(--teal)}
+.concept-name{display:block;color:var(--ink);font-weight:700}
+.concept-meta{display:block;margin-top:4px;color:var(--muted);font-size:.79rem}
+.badge{display:inline-block;margin-right:3px;padding:1px 6px;border-radius:10px;background:#e3efef;color:#08665e;font-size:.72rem}
+.review-badge{background:#fff0c9;color:#7a5700}
+.detail{display:none;padding:14px}
+.detail.active{display:block}
+.detail-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:10px}
+h2{margin:0;color:var(--navy);font-size:1.35rem}
+.meta{margin:3px 0 0;color:var(--muted)}
+.lineage{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin:0 0 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.lineage div{padding:8px 10px;border-right:1px solid var(--line);font-size:.79rem}
+.lineage div:last-child{border:0}
+.lineage b{display:block;color:var(--muted);font-size:.7rem}
+.card{margin-bottom:10px;overflow:hidden;border:1px solid var(--line);border-radius:8px}
+.card h3{margin:0;padding:11px 14px;color:var(--navy);background:var(--wash);font-size:1rem}
+.card>details>summary{display:flex;align-items:center;gap:4px;padding:8px 12px;color:var(--navy);background:var(--wash);font-size:.92rem;font-weight:700;cursor:pointer;list-style:none}
+.card>details>summary::-webkit-details-marker{display:none}
+.card>details>summary::before{content:"▸";width:14px;color:var(--teal)}
+.card>details[open]>summary::before{content:"▾"}
+.num{display:inline-grid;width:20px;height:20px;place-items:center;margin-right:6px;border-radius:50%;background:var(--teal);color:#fff;font-size:.72rem}
+.card-body{padding:8px 10px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px}
+table{width:100%;min-width:420px;border-collapse:collapse;font-size:.85rem}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--navy);background:#f8fafb}
+tr:last-child td{border-bottom:0}
+code{padding:1px 4px;border-radius:3px;background:#edf2f5;color:#23465e;font:11px Consolas,monospace;white-space:nowrap}
+.field-note{margin:8px 2px 0;color:var(--muted);font-size:.82rem}
+details.history{margin-top:10px;border:1px solid var(--line);border-radius:6px;background:#fbfcfd}
+details.history summary{padding:8px 10px;cursor:pointer;color:var(--navy);font-weight:700}
+.review{border-color:#ecd89e}
+.review h3{background:var(--warn)}
+.empty{padding:24px 16px;color:var(--muted)}
+.dictionary-cell{vertical-align:middle;white-space:nowrap}
+.form-cell{word-break:keep-all;overflow-wrap:anywhere}
+table.records-table{min-width:1050px;table-layout:fixed}
+table.records-table th:nth-child(1){width:17%}
+table.records-table th:nth-child(2){width:12%}
+table.records-table th:nth-child(3){width:17%}
+table.records-table th:nth-child(4){width:39%}
+table.records-table th:nth-child(5){width:15%}
+table.records-table th:nth-child(5){white-space:nowrap}
+.detail-list{margin:0;padding:14px 18px 14px 34px;border:1px solid #d6e2e9;border-radius:9px;background:#fff;color:#3e5969;font-size:.86rem;line-height:1.7}
+.detail-list li+li{margin-top:6px}
+.flow{list-style:none;margin:0;padding:0}
+.flow-step{display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:8px;position:relative;padding-bottom:10px}
+.flow-has-n .flow-step{grid-template-columns:22px minmax(0,1fr) auto}
+.flow-n{align-self:start;margin-left:8px;padding:1px 7px;border-radius:10px;background:#eef2f5;color:#23465e;font:700 .74rem Consolas,"Malgun Gothic",monospace;white-space:nowrap;min-width:74px;text-align:right;box-sizing:border-box}
+.flow-step:last-child{padding-bottom:0}
+.flow-step:not(:last-child)::before{content:"";position:absolute;top:22px;bottom:0;left:10px;width:2px;background:#b9cbd6}
+.flow-num{display:grid;width:22px;height:22px;place-items:center;border-radius:50%;background:var(--navy);color:#fff;font-size:.72rem;position:relative;z-index:1}
+.flow-num-empty{background:var(--muted)}
+.flow-body{display:flex;flex-direction:column;gap:5px;padding-top:1px;min-width:0}
+.flow-branch{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,46%);column-gap:6px;align-items:start}
+.flow-arrow{color:var(--muted)}
+.flow-result{padding:1px 8px;border-radius:6px;border:1px solid;font-weight:700;word-break:keep-all;overflow-wrap:anywhere;justify-self:start}
+.flow-value{color:#075e57;background:#e3efef;border-color:#b9d8d4}
+.flow-review{color:#7a5700;background:#fff0c9;border-color:#ecd89e}
+.flow-skip{color:#4e5f6c;background:#eef2f5;border-color:#d3dde4}
+.flow-cond,.flow-plain{word-break:keep-all;overflow-wrap:anywhere}
+.flow-sep{margin:10px 0;border-top:1px dashed var(--line)}
+.item-lines{display:flex;flex-direction:column;gap:3px;max-width:220px}
+.item-lines code{white-space:normal;word-break:keep-all}
+.field-badges{display:flex;flex-direction:column;align-items:flex-start;gap:4px;max-width:220px}
+.field-badges .badge{white-space:normal;word-break:keep-all}
+.mode-toggle{margin:8px auto;padding:0 12px;display:flex;gap:8px}
+.catalog .pane-title{display:flex;align-items:center;justify-content:space-between}
+.catalog-toggle{padding:3px 7px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
+.mode-btn.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.mode-btn.active:hover{background:var(--navy);border-color:var(--navy)}
+.form-workspace{grid-template-columns:350px minmax(0,1fr)}
+.form-item{width:100%;padding:14px 16px;border:0;border-bottom:1px solid var(--line);background:#fff;text-align:left;cursor:pointer;font:inherit}
+.form-item:hover{background:var(--wash)}
+.form-item.active{background:var(--wash);box-shadow:inset 3px 0 var(--teal)}
+.dictionary-editor{width:min(820px,calc(100vw - 40px));max-height:min(760px,84vh);padding:0;border:0;border-radius:14px;box-shadow:0 24px 64px rgba(16,43,63,.28);color:#172a36}
+.dictionary-editor::backdrop{background:rgba(11,31,45,.42)}
+.dictionary-dialog-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 26px;border-bottom:1px solid #dce6ec;background:#fff}
+.dictionary-dialog-head h2{margin:2px 0 0;font-size:1.08rem;line-height:1.45}
+.dictionary-eyebrow{margin:0;color:#527385;font-size:.75rem;font-weight:800;letter-spacing:.08em}
+.dictionary-dialog-head .btn{flex:0 0 auto}
+.dictionary-dialog-body{padding:22px 26px 30px;background:#f7fafc;max-height:calc(min(760px,84vh) - 87px);overflow:auto}
+.dictionary-section+.dictionary-section{margin-top:24px}
+.dictionary-section h3{margin:0 0 9px;color:#315c75;font-size:.86rem}
+.dictionary-section-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dictionary-section-grid>.term-group,.dictionary-section-grid>.dictionary-note{min-width:0;min-height:48px;margin:0;border:1px solid #d6e2e9;border-radius:9px;background:#fff;box-sizing:border-box}
+.dictionary-section-grid>.term-group>summary{display:flex;align-items:center;min-height:48px;padding:0 14px;color:#173f5a;font-size:.86rem;font-weight:750;cursor:pointer}
+.dictionary-section-grid>.term-group[open]>summary{border-bottom:1px solid #e3edf2;background:#fbfdfe}
+.keyword-chips{padding:12px 14px 14px;display:flex;flex-wrap:wrap;gap:6px}
+.keyword-chips span{padding:4px 8px;border:1px solid #d5e1e8;border-radius:12px;background:#f6fafc;font:11px Consolas,"Malgun Gothic",sans-serif}
+.dictionary-note{grid-column:1/-1;padding:12px 14px;color:#3e5969;font-size:.84rem;line-height:1.65;border:1px solid #d6e2e9;border-radius:9px;background:#fff}
+:root[data-theme="dark"] .btn,:root[data-theme="dark"] .pane-title,:root[data-theme="dark"] .filter,:root[data-theme="dark"] .concept,:root[data-theme="dark"] .form-item,:root[data-theme="dark"] .dictionary-dialog-head,:root[data-theme="dark"] .dictionary-section-grid>.term-group,:root[data-theme="dark"] .dictionary-editor{background:var(--panel);color:var(--ink)}
+:root[data-theme="dark"] .btn:hover,:root[data-theme="dark"] .filter:hover,:root[data-theme="dark"] .concept:hover,:root[data-theme="dark"] .form-item:hover,:root[data-theme="dark"] .filter.active,:root[data-theme="dark"] .concept.active,:root[data-theme="dark"] .form-item.active{background:#203b3b;color:var(--teal)}
+:root[data-theme="dark"] .lineage,:root[data-theme="dark"] details.history,:root[data-theme="dark"] th,:root[data-theme="dark"] .detail-list,:root[data-theme="dark"] .dictionary-dialog-body,:root[data-theme="dark"] .dictionary-note,:root[data-theme="dark"] .keyword-chips span{background:#242a31;color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] .badge,:root[data-theme="dark"] .flow-value{background:#203b3b;color:var(--teal);border-color:var(--line)}
+:root[data-theme="dark"] .review-badge,:root[data-theme="dark"] .flow-review{background:#3b3220;color:#ffcc66;border-color:var(--line)}
+:root[data-theme="dark"] .flow-skip,:root[data-theme="dark"] .flow-n,:root[data-theme="dark"] code{background:var(--wash);color:var(--navy);border-color:var(--line)}
+:root[data-theme="dark"] .dictionary-section h3,:root[data-theme="dark"] .dictionary-section-grid>.term-group>summary,:root[data-theme="dark"] .dictionary-eyebrow{color:var(--navy)}
+:root[data-theme="dark"] .dictionary-section-grid>.term-group[open]>summary{background:var(--wash);border-color:var(--line)}
+:root[data-theme="dark"] .mode-btn.active{background:var(--teal);border-color:var(--teal);color:var(--bg)}
+@media(max-width:900px){.workspace{grid-template-columns:240px minmax(0,1fr);height:auto;min-height:calc(100vh - 132px)}.detail{grid-column:1/-1;border-top:1px solid var(--line)}}
+@media(max-width:640px){.dictionary-dialog-body{padding:16px}.dictionary-section-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>변수 정의서</h1>
+</header>
+<div class="mode-toggle">
+  <button type="button" id="mode-var" class="btn mode-btn active">변수 기준</button>
+  <button type="button" id="mode-form" class="btn mode-btn">기록지 기준</button>
+</div>
+<div id="panel-var">
+<div class="group-tabs" aria-label="변수 그룹">
+  <button class="filter active" type="button" data-filter="all">전체</button>
+  <button class="filter" type="button" data-filter="수술 전">수술 전</button><button class="filter" type="button" data-filter="수술">수술</button><button class="filter" type="button" data-filter="수술 후">수술 후</button><button class="filter" type="button" data-filter="병리">병리</button>
+</div>
+<div class="workspace">
+  <div class="catalog">
+    <p class="pane-title">변수 7 <button id="catalog-toggle" class="catalog-toggle" type="button" aria-label="변수 목록 접기" aria-expanded="true">&lt;&lt;</button></p>
+
+<button class="concept" type="button" data-concept="preop.main_symptom" data-area="수술 전"
+        data-search="주증상 sx_yn · sx_type · sx_etc pre">
+  <span class="concept-name">주증상</span>
+  <span class="concept-meta">3개 eCRF 칸</span>
+</button>
+<button class="concept" type="button" data-concept="op.approach" data-area="수술"
+        data-search="수술 접근법 op_appr op">
+  <span class="concept-name">수술 접근법</span>
+  <span class="concept-meta">1개 eCRF 칸</span>
+</button>
+<button class="concept" type="button" data-concept="op.asa" data-area="수술"
+        data-search="asa 등급 asa op">
+  <span class="concept-name">ASA 등급</span>
+  <span class="concept-meta">1개 eCRF 칸</span>
+</button>
+<button class="concept" type="button" data-concept="op.duration" data-area="수술"
+        data-search="수술 시간 op_time op">
+  <span class="concept-name">수술 시간</span>
+  <span class="concept-meta">1개 eCRF 칸</span>
+</button>
+<button class="concept" type="button" data-concept="op.stoma" data-area="수술"
+        data-search="장루 조성 stoma op">
+  <span class="concept-name">장루 조성</span>
+  <span class="concept-meta">1개 eCRF 칸</span>
+</button>
+<button class="concept" type="button" data-concept="postop.diet" data-area="수술 후"
+        data-search="식이 시작일 diet_dt postop">
+  <span class="concept-name">식이 시작일</span>
+  <span class="concept-meta">1개 eCRF 칸</span>
+</button>
+<button class="concept" type="button" data-concept="pathology.tnm" data-area="병리"
+        data-search="병리 tnm pt · pn · ln_n path">
+  <span class="concept-name">병리 TNM</span>
+  <span class="concept-meta">3개 eCRF 칸</span>
+</button>
+  </div>
+  <main>
+    <div class="empty" id="empty" hidden>조건에 맞는 변수가 없습니다.</div>
+
+<div class="detail" data-detail="preop.main_symptom">
+  <div class="detail-head">
+    <div>
+      <h2>주증상</h2>
+      <p class="meta">수술 전 · PRE · 3개 eCRF 칸</p>
+    </div>
+  </div>
+  <div class="lineage">
+    <div><b>산출 방식</b>원문 키워드 판정</div>
+    <div><b>버전</b>1.0</div>
+  </div>
+  <article class="card"><details><summary><span class="num">1</span>eCRF 입력 항목</summary><div class="card-body"><div class="table-wrap"><table><thead><tr><th>eCRF 항목</th><th>입력값</th></tr></thead><tbody><tr><td>주증상 유무 <code>SX_YN</code></td><td>1=있음, 0=없음</td></tr><tr><td>주증상 종류 <code>SX_TYPE</code></td><td>1=복통, 2=혈변, 3=배변 습관 변화, 4=체중 감소, 9=기타</td></tr><tr><td>기타 내용 <code>SX_ETC</code></td><td>자유 입력</td></tr></tbody></table></div></div></details></article>
+  <article class="card"><h3><span class="num">2</span>기록지·판정 규칙</h3><div class="card-body"><div class="table-wrap"><table class="records-table"><thead><tr><th>eCRF 항목</th><th>기록지</th><th>항목</th><th>판정 기준</th><th>추출 상세</th></tr></thead><tbody><tr><td><div class="field-badges"><span class="badge">주증상 유무</span><span class="badge">주증상 종류</span></div></td><td class="form-cell">외래 초진 기록</td><td><div class="item-lines"><code>초진</code><code>→ 주호소</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">주호소·현병력에서 사전 낱말을 찾는다 → 해당 선택지</div></div></li><li class="flow-step"><span class="flow-num">2</span><div class="flow-body"><div class="flow-row flow-plain">부정 표현이 붙은 낱말 → 제외</div></div></li><li class="flow-step"><span class="flow-num">3</span><div class="flow-body"><div class="flow-row flow-plain">아무것도 없음 → 없음</div></div></li></ol></td><td class="dictionary-cell"><button type="button" class="btn" onclick="document.getElementById('detail-0-0').showModal()">상세 보기</button></td></tr><tr><td><div class="field-badges"><span class="badge">주증상 종류</span></div></td><td class="form-cell">입원 기록</td><td><div class="item-lines"><code>입원</code><code>→ 입원 사유</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-branch"><span class="flow-cond">초진에 없으면</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-result flow-value">입원 기록에서 같은 방식으로 찾는다</span></div></div></li></ol></td><td class="dictionary-cell"></td></tr></tbody></table></div></div></article>
+<dialog id="detail-0-0" class="dictionary-editor">
+  <div class="dictionary-dialog-head">
+    <div>
+      <p class="dictionary-eyebrow">추출 상세</p>
+      <h2>외래 초진 기록 · 주호소 &lt;- 초진</h2>
+    </div>
+    <button type="button" class="btn" onclick="this.closest('dialog').close()">닫기</button>
+  </div>
+  <div class="dictionary-dialog-body"><section class="dictionary-section"><h3>추출 상세</h3><ul class="detail-list"><li>초진이 여러 장이면 수술일에 가장 가까운 것</li></ul></section><section class="dictionary-section"><h3>추출 키워드</h3><h4>포함 기준</h4><div class="dictionary-section-grid"><details class="term-group"><summary>혈변 (3개)</summary><div class="keyword-chips"><span>혈변</span><span>피가 섞인 변</span><span>hematochezia</span></div></details><details class="term-group"><summary>배변 습관 변화 (3개)</summary><div class="keyword-chips"><span>가는 변</span><span>변비</span><span>설사와 변비 반복</span></div></details><details class="term-group"><summary>체중 감소 (2개)</summary><div class="keyword-chips"><span>체중 감소</span><span>살이 빠짐</span></div></details></div><h4>제외·검토 기준</h4><div class="dictionary-section-grid"><details class="term-group"><summary>부정 표현 (3개)</summary><div class="keyword-chips"><span>없음</span><span>없다고 함</span><span>부인</span></div></details><div class="dictionary-note">부정 표현 바로 앞 낱말은 세지 않는다</div></div></section></div>
+</dialog>
+  <article class="card review"><h3><span class="num">3</span>예외·검토 조건</h3><div class="card-body"><div class="table-wrap"><table><thead><tr><th>사람 검토로 보내는 경우</th></tr></thead><tbody><tr><td>사전에 없는 증상 표현이 나옴</td></tr><tr><td>외래와 입원 기록의 증상이 서로 다름</td></tr></tbody></table></div></div></article>
+  <details class="history"><summary>버전 이력 보기</summary><div class="table-wrap"><table><thead><tr><th>버전</th><th>적용일</th><th>변경 내용</th></tr></thead><tbody><tr><td>1.0</td><td>2026-09-01</td><td>합성 데모 정의</td></tr></tbody></table></div></details>
+</div>
+<div class="detail" data-detail="op.approach">
+  <div class="detail-head">
+    <div>
+      <h2>수술 접근법</h2>
+      <p class="meta">수술 · OP · 1개 eCRF 칸</p>
+    </div>
+  </div>
+  <div class="lineage">
+    <div><b>산출 방식</b>수술기록 키워드</div>
+    <div><b>버전</b>1.0</div>
+  </div>
+  <article class="card"><details><summary><span class="num">1</span>eCRF 입력 항목</summary><div class="card-body"><div class="table-wrap"><table><thead><tr><th>eCRF 항목</th><th>입력값</th></tr></thead><tbody><tr><td>접근법 <code>OP_APPR</code></td><td>1=개복, 2=복강경, 3=로봇</td></tr></tbody></table></div></div></details></article>
+  <article class="card"><h3><span class="num">2</span>기록지·판정 규칙</h3><div class="card-body"><div class="table-wrap"><table class="records-table"><thead><tr><th>eCRF 항목</th><th>기록지</th><th>항목</th><th>판정 기준</th><th>추출 상세</th></tr></thead><tbody><tr><td><div class="field-badges"><span class="badge">접근법</span></div></td><td class="form-cell">수술 기록</td><td><div class="item-lines"><code>수술 기록</code><code>→ 수술명</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">수술명에 로봇 → 로봇</div></div></li><li class="flow-step"><span class="flow-num">2</span><div class="flow-body"><div class="flow-row flow-plain">복강경 → 복강경</div></div></li><li class="flow-step"><span class="flow-num">3</span><div class="flow-body"><div class="flow-row flow-plain">그 밖 → 개복</div></div></li></ol></td><td class="dictionary-cell"></td></tr></tbody></table></div></div></article>
+  <article class="card review"><h3><span class="num">3</span>예외·검토 조건</h3><div class="card-body"><div class="table-wrap"><table><thead><tr><th>사람 검토로 보내는 경우</th></tr></thead><tbody><tr><td>개복 전환 표현이 있음</td></tr></tbody></table></div></div></article>
+  <details class="history"><summary>버전 이력 보기</summary><div class="table-wrap"><table><thead><tr><th>버전</th><th>적용일</th><th>변경 내용</th></tr></thead><tbody><tr><td>1.0</td><td>2026-09-01</td><td>합성 데모 정의</td></tr></tbody></table></div></details>
+</div>
+<div class="detail" data-detail="op.asa">
+  <div class="detail-head">
+    <div>
+      <h2>ASA 등급</h2>
+      <p class="meta">수술 · OP · 1개 eCRF 칸</p>
+    </div>
+  </div>
+  <div class="lineage">
+    <div><b>산출 방식</b>구조화 값</div>
+    <div><b>버전</b>1.0</div>
+  </div>
+  <article class="card"><details><summary><span class="num">1</span>eCRF 입력 항목</summary><div class="card-body"><div class="table-wrap"><table><thead><tr><th>eCRF 항목</th><th>입력값</th></tr></thead><tbody><tr><td>ASA <code>ASA</code></td><td>1~5</td></tr></tbody></table></div></div></details></article>
+  <article class="card"><h3><span class="num">2</span>기록지·판정 규칙</h3><div class="card-body"><div class="table-wrap"><table class="records-table"><thead><tr><th>eCRF 항목</th><th>기록지</th><th>항목</th><th>판정 기준</th><th>추출 상세</th></tr></thead><tbody><tr><td><div class="field-badges"><span class="badge">ASA</span></div></td><td class="form-cell">수술 기록</td><td><div class="item-lines"><code>마취</code><code>→ ASA class</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">마취 기록의 ASA class 값을 그대로 쓴다</div></div></li></ol></td><td class="dictionary-cell"></td></tr></tbody></table></div></div></article>
+
+  <details class="history"><summary>버전 이력 보기</summary><div class="table-wrap"><table><thead><tr><th>버전</th><th>적용일</th><th>변경 내용</th></tr></thead><tbody><tr><td>1.0</td><td>2026-09-01</td><td>합성 데모 정의</td></tr></tbody></table></div></details>
+</div>
+<div class="detail" data-detail="op.duration">
+  <div class="detail-head">
+    <div>
+      <h2>수술 시간</h2>
+      <p class="meta">수술 · OP · 1개 eCRF 칸</p>
+    </div>
+  </div>
+  <div class="lineage">
+    <div><b>산출 방식</b>시각 계산</div>
+    <div><b>버전</b>1.0</div>
+  </div>
+  <article class="card"><details><summary><span class="num">1</span>eCRF 입력 항목</summary><div class="card-body"><div class="table-wrap"><table><thead><tr><th>eCRF 항목</th><th>입력값</th></tr></thead><tbody><tr><td>수술 시간(분) <code>OP_TIME</code></td><td>숫자</td></tr></tbody></table></div><p class="field-note">비고: 마취 시작 시각은 쓰지 않는다</p></div></details></article>
+  <article class="card"><h3><span class="num">2</span>기록지·판정 규칙</h3><div class="card-body"><div class="table-wrap"><table class="records-table"><thead><tr><th>eCRF 항목</th><th>기록지</th><th>항목</th><th>판정 기준</th><th>추출 상세</th></tr></thead><tbody><tr><td><div class="field-badges"><span class="badge">수술 시간(분)</span></div></td><td class="form-cell">수술 기록</td><td><div class="item-lines"><code>수술 기록</code><code>→ 수술 시작·종료</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">수술 종료 − 수술 시작(분)</div></div></li><li class="flow-step"><span class="flow-num">2</span><div class="flow-body"><div class="flow-row flow-branch"><span class="flow-cond">종료가 시작보다 이르면</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-result flow-value">하루를 더한다</span></div></div></li></ol></td><td class="dictionary-cell"></td></tr></tbody></table></div></div></article>
+  <article class="card review"><h3><span class="num">3</span>예외·검토 조건</h3><div class="card-body"><div class="table-wrap"><table><thead><tr><th>사람 검토로 보내는 경우</th></tr></thead><tbody><tr><td>시작·종료 쌍이 둘 이상</td></tr><tr><td>300분 초과</td></tr></tbody></table></div></div></article>
+  <details class="history"><summary>버전 이력 보기</summary><div class="table-wrap"><table><thead><tr><th>버전</th><th>적용일</th><th>변경 내용</th></tr></thead><tbody><tr><td>1.0</td><td>2026-09-01</td><td>합성 데모 정의</td></tr></tbody></table></div></details>
+</div>
+<div class="detail" data-detail="op.stoma">
+  <div class="detail-head">
+    <div>
+      <h2>장루 조성</h2>
+      <p class="meta">수술 · OP · 1개 eCRF 칸</p>
+    </div>
+  </div>
+  <div class="lineage">
+    <div><b>산출 방식</b>수술기록 키워드</div>
+    <div><b>버전</b>1.0</div>
+  </div>
+  <article class="card"><details><summary><span class="num">1</span>eCRF 입력 항목</summary><div class="card-body"><div class="table-wrap"><table><thead><tr><th>eCRF 항목</th><th>입력값</th></tr></thead><tbody><tr><td>장루 <code>STOMA</code></td><td>0=아니오, 1=예</td></tr></tbody></table></div></div></details></article>
+  <article class="card"><h3><span class="num">2</span>기록지·판정 규칙</h3><div class="card-body"><div class="table-wrap"><table class="records-table"><thead><tr><th>eCRF 항목</th><th>기록지</th><th>항목</th><th>판정 기준</th><th>추출 상세</th></tr></thead><tbody><tr><td><div class="field-badges"><span class="badge">장루</span></div></td><td class="form-cell">수술 기록</td><td><div class="item-lines"><code>수술 기록</code><code>→ 수술명</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">회장루·결장루 조성 표현 → 예</div></div></li><li class="flow-step"><span class="flow-num">2</span><div class="flow-body"><div class="flow-row flow-plain">없음 → 아니오</div></div></li></ol></td><td class="dictionary-cell"></td></tr></tbody></table></div></div></article>
+
+  <details class="history"><summary>버전 이력 보기</summary><div class="table-wrap"><table><thead><tr><th>버전</th><th>적용일</th><th>변경 내용</th></tr></thead><tbody><tr><td>1.0</td><td>2026-09-01</td><td>합성 데모 정의</td></tr></tbody></table></div></details>
+</div>
+<div class="detail" data-detail="postop.diet">
+  <div class="detail-head">
+    <div>
+      <h2>식이 시작일</h2>
+      <p class="meta">수술 후 · POSTOP · 1개 eCRF 칸</p>
+    </div>
+  </div>
+  <div class="lineage">
+    <div><b>산출 방식</b>간호기록 날짜</div>
+    <div><b>버전</b>1.0</div>
+  </div>
+  <article class="card"><details><summary><span class="num">1</span>eCRF 입력 항목</summary><div class="card-body"><div class="table-wrap"><table><thead><tr><th>eCRF 항목</th><th>입력값</th></tr></thead><tbody><tr><td>식이 시작일 <code>DIET_DT</code></td><td>날짜</td></tr></tbody></table></div></div></details></article>
+  <article class="card"><h3><span class="num">2</span>기록지·판정 규칙</h3><div class="card-body"><div class="table-wrap"><table class="records-table"><thead><tr><th>eCRF 항목</th><th>기록지</th><th>항목</th><th>판정 기준</th><th>추출 상세</th></tr></thead><tbody><tr><td><div class="field-badges"><span class="badge">식이 시작일</span></div></td><td class="form-cell">경과 간호기록</td><td><div class="item-lines"><code>간호</code><code>→ 경과</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">수술 뒤 처음 나온 미음·물 섭취 시작 표현의 날짜</div></div></li></ol></td><td class="dictionary-cell"></td></tr></tbody></table></div></div></article>
+  <article class="card review"><h3><span class="num">3</span>예외·검토 조건</h3><div class="card-body"><div class="table-wrap"><table><thead><tr><th>사람 검토로 보내는 경우</th></tr></thead><tbody><tr><td>수술 전 날짜가 잡힘</td></tr></tbody></table></div></div></article>
+  <details class="history"><summary>버전 이력 보기</summary><div class="table-wrap"><table><thead><tr><th>버전</th><th>적용일</th><th>변경 내용</th></tr></thead><tbody><tr><td>1.0</td><td>2026-09-01</td><td>합성 데모 정의</td></tr></tbody></table></div></details>
+</div>
+<div class="detail" data-detail="pathology.tnm">
+  <div class="detail-head">
+    <div>
+      <h2>병리 TNM</h2>
+      <p class="meta">병리 · PATH · 3개 eCRF 칸</p>
+    </div>
+  </div>
+  <div class="lineage">
+    <div><b>산출 방식</b>판독문 정규식</div>
+    <div><b>버전</b>1.0</div>
+  </div>
+  <article class="card"><details><summary><span class="num">1</span>eCRF 입력 항목</summary><div class="card-body"><div class="table-wrap"><table><thead><tr><th>eCRF 항목</th><th>입력값</th></tr></thead><tbody><tr><td>pT <code>PT</code></td><td>T1~T4b</td></tr><tr><td>pN <code>PN</code></td><td>N0~N2b</td></tr><tr><td>검사 림프절 수 <code>LN_N</code></td><td>숫자</td></tr></tbody></table></div></div></details></article>
+  <article class="card"><h3><span class="num">2</span>기록지·판정 규칙</h3><div class="card-body"><div class="table-wrap"><table class="records-table"><thead><tr><th>eCRF 항목</th><th>기록지</th><th>항목</th><th>판정 기준</th><th>추출 상세</th></tr></thead><tbody><tr><td><div class="field-badges"><span class="badge">pT</span><span class="badge">pN</span><span class="badge">검사 림프절 수</span></div></td><td class="form-cell">병리 결과지</td><td><div class="item-lines"><code>외과 병리</code><code>→ DIAGNOSIS</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">(pT…) 괄호 값 → pT</div></div></li><li class="flow-step"><span class="flow-num">2</span><div class="flow-body"><div class="flow-row flow-plain">(pN…) 괄호 값 → pN</div></div></li><li class="flow-step"><span class="flow-num">3</span><div class="flow-body"><div class="flow-row flow-plain">out of N regional lymph nodes → 검사 림프절 수</div></div></li></ol></td><td class="dictionary-cell"></td></tr></tbody></table></div></div></article>
+  <article class="card review"><h3><span class="num">3</span>예외·검토 조건</h3><div class="card-body"><div class="table-wrap"><table><thead><tr><th>사람 검토로 보내는 경우</th></tr></thead><tbody><tr><td>전이 림프절 수와 pN 이 맞지 않음</td></tr><tr><td>종양이 둘 이상</td></tr></tbody></table></div></div></article>
+  <details class="history"><summary>버전 이력 보기</summary><div class="table-wrap"><table><thead><tr><th>버전</th><th>적용일</th><th>변경 내용</th></tr></thead><tbody><tr><td>1.0</td><td>2026-09-01</td><td>합성 데모 정의</td></tr></tbody></table></div></details>
+</div>
+  </main>
+</div>
+</div>
+<div id="panel-form" hidden>
+<div class="workspace form-workspace">
+  <div class="catalog">
+    <p class="pane-title">기록지 5</p>
+    <button class="form-item" type="button" data-form="경과 간호기록"><span class="concept-name">경과 간호기록</span><span class="concept-meta">1개 항목 · 1개 변수</span></button><button class="form-item" type="button" data-form="병리 결과지"><span class="concept-name">병리 결과지</span><span class="concept-meta">1개 항목 · 1개 변수</span></button><button class="form-item" type="button" data-form="수술 기록"><span class="concept-name">수술 기록</span><span class="concept-meta">3개 항목 · 4개 변수</span></button><button class="form-item" type="button" data-form="외래 초진 기록"><span class="concept-name">외래 초진 기록</span><span class="concept-meta">1개 항목 · 1개 변수</span></button><button class="form-item" type="button" data-form="입원 기록"><span class="concept-name">입원 기록</span><span class="concept-meta">1개 항목 · 1개 변수</span></button>
+  </div>
+  <main>
+
+<div class="detail form-detail" data-form-detail="경과 간호기록">
+  <div class="detail-head"><div><h2>경과 간호기록</h2>
+  <p class="meta">1개 항목 · 1개 변수가 읽는다</p></div></div>
+  <article class="card"><h3><span class="num">1</span>이 기록지에서 읽는 항목</h3><div class="card-body">
+  <div class="table-wrap"><table><thead><tr><th>항목</th><th>판정 기준</th><th>읽는 변수</th></tr></thead>
+  <tbody><tr><td><div class="item-lines"><code>간호</code><code>→ 경과</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">수술 뒤 처음 나온 미음·물 섭취 시작 표현의 날짜</div></div></li></ol></td><td><span class="badge">식이 시작일</span></td></tr></tbody></table></div></div></article>
+</div>
+<div class="detail form-detail" data-form-detail="병리 결과지">
+  <div class="detail-head"><div><h2>병리 결과지</h2>
+  <p class="meta">1개 항목 · 1개 변수가 읽는다</p></div></div>
+  <article class="card"><h3><span class="num">1</span>이 기록지에서 읽는 항목</h3><div class="card-body">
+  <div class="table-wrap"><table><thead><tr><th>항목</th><th>판정 기준</th><th>읽는 변수</th></tr></thead>
+  <tbody><tr><td><div class="item-lines"><code>외과 병리</code><code>→ DIAGNOSIS</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">(pT…) 괄호 값 → pT</div></div></li><li class="flow-step"><span class="flow-num">2</span><div class="flow-body"><div class="flow-row flow-plain">(pN…) 괄호 값 → pN</div></div></li><li class="flow-step"><span class="flow-num">3</span><div class="flow-body"><div class="flow-row flow-plain">out of N regional lymph nodes → 검사 림프절 수</div></div></li></ol></td><td><span class="badge">병리 TNM</span></td></tr></tbody></table></div></div></article>
+</div>
+<div class="detail form-detail" data-form-detail="수술 기록">
+  <div class="detail-head"><div><h2>수술 기록</h2>
+  <p class="meta">3개 항목 · 4개 변수가 읽는다</p></div></div>
+  <article class="card"><h3><span class="num">1</span>이 기록지에서 읽는 항목</h3><div class="card-body">
+  <div class="table-wrap"><table><thead><tr><th>항목</th><th>판정 기준</th><th>읽는 변수</th></tr></thead>
+  <tbody><tr><td><div class="item-lines"><code>마취</code><code>→ ASA class</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">마취 기록의 ASA class 값을 그대로 쓴다</div></div></li></ol></td><td><span class="badge">ASA 등급</span></td></tr><tr><td><div class="item-lines"><code>수술 기록</code><code>→ 수술 시작·종료</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">수술 종료 − 수술 시작(분)</div></div></li><li class="flow-step"><span class="flow-num">2</span><div class="flow-body"><div class="flow-row flow-branch"><span class="flow-cond">종료가 시작보다 이르면</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-result flow-value">하루를 더한다</span></div></div></li></ol></td><td><span class="badge">수술 시간</span></td></tr><tr><td><div class="item-lines"><code>수술 기록</code><code>→ 수술명</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">수술명에 로봇 → 로봇</div></div></li><li class="flow-step"><span class="flow-num">2</span><div class="flow-body"><div class="flow-row flow-plain">복강경 → 복강경</div></div></li><li class="flow-step"><span class="flow-num">3</span><div class="flow-body"><div class="flow-row flow-plain">그 밖 → 개복</div></div></li></ol><div class="flow-sep"></div><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">회장루·결장루 조성 표현 → 예</div></div></li><li class="flow-step"><span class="flow-num">2</span><div class="flow-body"><div class="flow-row flow-plain">없음 → 아니오</div></div></li></ol></td><td><span class="badge">수술 접근법</span><span class="badge">장루 조성</span></td></tr></tbody></table></div></div></article>
+</div>
+<div class="detail form-detail" data-form-detail="외래 초진 기록">
+  <div class="detail-head"><div><h2>외래 초진 기록</h2>
+  <p class="meta">1개 항목 · 1개 변수가 읽는다</p></div></div>
+  <article class="card"><h3><span class="num">1</span>이 기록지에서 읽는 항목</h3><div class="card-body">
+  <div class="table-wrap"><table><thead><tr><th>항목</th><th>판정 기준</th><th>읽는 변수</th></tr></thead>
+  <tbody><tr><td><div class="item-lines"><code>초진</code><code>→ 주호소</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-plain">주호소·현병력에서 사전 낱말을 찾는다 → 해당 선택지</div></div></li><li class="flow-step"><span class="flow-num">2</span><div class="flow-body"><div class="flow-row flow-plain">부정 표현이 붙은 낱말 → 제외</div></div></li><li class="flow-step"><span class="flow-num">3</span><div class="flow-body"><div class="flow-row flow-plain">아무것도 없음 → 없음</div></div></li></ol></td><td><span class="badge">주증상</span></td></tr></tbody></table></div></div></article>
+</div>
+<div class="detail form-detail" data-form-detail="입원 기록">
+  <div class="detail-head"><div><h2>입원 기록</h2>
+  <p class="meta">1개 항목 · 1개 변수가 읽는다</p></div></div>
+  <article class="card"><h3><span class="num">1</span>이 기록지에서 읽는 항목</h3><div class="card-body">
+  <div class="table-wrap"><table><thead><tr><th>항목</th><th>판정 기준</th><th>읽는 변수</th></tr></thead>
+  <tbody><tr><td><div class="item-lines"><code>입원</code><code>→ 입원 사유</code></div></td><td><ol class="flow"><li class="flow-step"><span class="flow-num">1</span><div class="flow-body"><div class="flow-row flow-branch"><span class="flow-cond">초진에 없으면</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-result flow-value">입원 기록에서 같은 방식으로 찾는다</span></div></div></li></ol></td><td><span class="badge">주증상</span></td></tr></tbody></table></div></div></article>
+</div>
+  </main>
+</div>
+</div>
+<script>
+const filters=[...document.querySelectorAll('.group-tabs .filter')],concepts=[...document.querySelectorAll('.concept')],
+details=[...document.querySelectorAll('.detail')],empty=document.querySelector('#empty');
+let area='all';
+function apply(){
+  let count=0;
+  concepts.forEach(item=>{
+    const show=area==='all'||item.dataset.area===area;
+    item.hidden=!show;
+    if(show)count+=1;
+  });
+  empty.hidden=count!==0;
+  const active=document.querySelector('.concept.active');
+  if(active?.hidden)concepts.find(item=>!item.hidden)?.click();
+}
+filters.forEach(button=>button.addEventListener('click',()=>{
+  area=button.dataset.filter;
+  filters.forEach(item=>item.classList.toggle('active',item===button));
+  apply();
+}));
+concepts.forEach(button=>button.addEventListener('click',()=>{
+  concepts.forEach(item=>item.classList.toggle('active',item===button));
+  details.forEach(item=>item.classList.toggle('active',item.dataset.detail===button.dataset.concept));
+}));
+apply();
+document.querySelector('#catalog-toggle').addEventListener('click',event=>{
+  const workspace=event.currentTarget.closest('.workspace');
+  const collapsed=workspace.classList.toggle('catalog-collapsed');
+  event.currentTarget.textContent=collapsed?'>>':'<<';
+  event.currentTarget.setAttribute('aria-expanded',String(!collapsed));
+  event.currentTarget.setAttribute('aria-label',collapsed?'변수 목록 펼치기':'변수 목록 접기');
+});
+const ids=["preop.main_symptom", "op.approach", "op.asa", "op.duration", "op.stoma", "postop.diet", "pathology.tnm"];
+if(ids.length){
+  const first=document.querySelector(`.concept[data-concept="${CSS.escape(ids[0])}"]`);
+  if(first)first.click();
+}
+
+const modeVar=document.getElementById('mode-var'),modeForm=document.getElementById('mode-form'),
+panelVar=document.getElementById('panel-var'),panelForm=document.getElementById('panel-form'),
+formItems=[...document.querySelectorAll('.form-item')],formDetails=[...document.querySelectorAll('.form-detail')];
+formItems.forEach(button=>button.addEventListener('click',()=>{
+  formItems.forEach(item=>item.classList.toggle('active',item===button));
+  formDetails.forEach(item=>item.classList.toggle('active',item.dataset.formDetail===button.dataset.form));
+}));
+modeVar.addEventListener('click',()=>{
+  modeVar.classList.add('active');modeForm.classList.remove('active');
+  panelVar.hidden=false;panelForm.hidden=true;
+});
+modeForm.addEventListener('click',()=>{
+  modeForm.classList.add('active');modeVar.classList.remove('active');
+  panelForm.hidden=false;panelVar.hidden=true;
+  if(formItems.length&&!formItems.some(item=>item.classList.contains('active')))formItems[0].click();
+});
+</script>
+</body>
+</html>

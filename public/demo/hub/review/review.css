@@ -1,0 +1,87 @@
+:root {
+  color-scheme: light;
+  font: 14px/1.5 system-ui, "Malgun Gothic", sans-serif;
+  --bg: #f4f7f8; --panel: #fff; --ink: #173044; --muted: #586f78;
+  --line: #d8e1e7; --accent: #11786f; --accent-hover: #0b5d56;
+  --head: #eaf0f2; --saved: #eaf7ee; --dirty: #fff5cf; --detail: #f1f4f5;
+  --error: #9b1c1c; --button-text: #fff;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111418; --panel: #1b2026; --ink: #e6e8ec; --muted: #a5adb6;
+  --line: #343b44; --accent: #7fd4bd; --accent-hover: #9ee1cf;
+  --head: #26313b; --saved: #1b3529; --dirty: #3a321d; --detail: #242a31;
+  --error: #ff9b9b; --button-text: #111418;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); }
+main { padding: 12px 16px 32px; }
+h1 { margin: 0 0 4px; font-size: 20px; }
+header p, .review-table small { color: var(--muted); }
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+label { display: grid; gap: 5px; font-weight: 600; }
+.toolbar .toggle { display: flex; align-items: center; padding: 8px 0; }
+select, input, button {
+  font: inherit;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--ink);
+}
+button { cursor: pointer; background: var(--accent); color: var(--button-text); border-color: var(--accent); }
+button:hover { background: var(--accent-hover); }
+button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button:disabled { opacity: .5; cursor: wait; }
+#status { min-height: 1.5em; }
+
+.pager { display: flex; align-items: center; gap: 12px; }
+.table-scroll { overflow: auto; max-height: 420px; margin: 12px 0; }
+.review-scroll { max-height: 75vh; }
+.review-section h2 { font-size: 1rem; margin: 20px 0 4px; }
+table { border-collapse: collapse; width: max-content; min-width: 100%; }
+th, td {
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+  padding: 6px;
+  min-width: 100px;
+  max-width: 480px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+th { position: sticky; top: 0; z-index: 1; background: var(--head); }
+th small { display: block; color: var(--muted); font-weight: normal; }
+.review-table { font-size: .875rem; background: var(--panel); }
+.review-table th, .review-table td { padding: 4px 6px; }
+.review-table .clipped-text { max-height: 6.5em; max-width: 420px; overflow: auto; white-space: pre-wrap; }
+.review-table .input-cell { min-width: 130px; }
+.review-table .input-cell input, .review-table .input-cell select { width: 100%; min-width: 0; padding: 5px; }
+.review-table .multi-choice { width: 180px; max-width: 100%; }
+.review-table .multi-choice summary { display: block; cursor: pointer; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.review-table .multi-choice summary::before { content: '▸ '; }
+.review-table .multi-choice[open] summary::before { content: '▾ '; }
+.review-table .multi-choice-list { max-height: 14em; overflow: auto; }
+.review-table .multi-choice-option { display: flex; align-items: center; gap: 5px; white-space: nowrap; font-weight: normal; }
+.review-table .multi-choice-option input { width: auto; margin: 0; }
+.review-table small { display: block; }
+.review-table button { padding: 5px 8px; white-space: nowrap; }
+.chart-badge { display: block; margin-top: 4px; padding: 2px 6px; border-radius: 6px; background: var(--detail); color: var(--muted); white-space: nowrap; }
+.chart-badge.done { background: var(--saved); color: var(--accent); }
+.chart-link { display: block; margin-top: 4px; color: var(--accent); white-space: nowrap; }
+.review-table tr.saved { background: var(--saved); }
+.review-table tr.dirty { background: var(--dirty); }
+.review-table tr.detail-row { background: var(--detail); }
+.detail-row.hidden { display: none; }
+.detail-row h3 { margin: 12px 0 4px; font-size: .95rem; }
+.sources h3 { margin: 16px 0 4px; font-size: 1rem; }
+.error { color: var(--error); }
+@media (max-width: 640px) { main { padding: 12px 10px 24px; } }
