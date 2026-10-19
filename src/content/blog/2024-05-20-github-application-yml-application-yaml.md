@@ -4,6 +4,7 @@ date: 2024-05-20
 description: "개인 프로젝트를 진행하면서 git repository를 pirvate으로 두고 모든 파일을 push 했다."
 source: medium
 original: "https://medium.com/@sj.youns1027/github-%EC%BB%A4%EB%B0%8B-%ED%9E%88%EC%8A%A4%ED%86%A0%EB%A6%AC%EC%97%90%EC%84%9C-application-yml-application-yaml%EA%B0%99%EC%9D%80-%EC%A4%91%EC%9A%94%ED%8C%8C%EC%9D%BC-%EB%AA%A8%EB%91%90-%EC%82%AD%EC%A0%9C%ED%95%98%EA%B8%B0-979695003292"
+theme: problem-solving
 ---
 ## github 커밋 히스토리에서 application.yml, application.yaml같은 중요파일 모두 삭제하기
 

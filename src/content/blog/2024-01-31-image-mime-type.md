@@ -4,6 +4,7 @@ date: 2024-01-31
 description: "Upload WebP format"
 source: medium
 original: "https://medium.com/@sj.youns1027/image-mime-type-493ff6786264"
+theme: problem-solving
 ---
 ### Upload WebP format
 

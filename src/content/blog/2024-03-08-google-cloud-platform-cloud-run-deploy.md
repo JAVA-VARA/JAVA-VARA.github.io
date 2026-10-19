@@ -4,6 +4,7 @@ date: 2024-03-08
 description: "Springboot porject를 Google Cloud Platform에 배포 하면서 알게된 내용과 그 과정들을 기록했다."
 source: medium
 original: "https://medium.com/@sj.youns1027/google-cloud-platform%EC%97%90%EC%84%9C-cloud-run-deploy-%ED%95%98%EA%B8%B0-564c0ffe0ade"
+theme: adoption
 ---
 ## Google Cloud Platform에서 Cloud Run Deploy 하기
 

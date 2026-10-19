@@ -4,6 +4,7 @@ date: 2024-05-20
 description: "Selenium으로 크롤링하기"
 source: medium
 original: "https://medium.com/@sj.youns1027/football-quiz-project-x-846c7845e1ea"
+theme: adoption
 ---
 selenium을 이용해 웹사이트에서 축구 선수의 정보를 크롤링하는 서비스 로직을 만들었다.
 

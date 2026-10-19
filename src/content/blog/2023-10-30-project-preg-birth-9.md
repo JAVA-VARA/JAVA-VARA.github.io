@@ -4,6 +4,7 @@ date: 2023-10-30
 description: "게시판 글 작성자, 작성일 추가/조회수 기능"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-9-a4a0d99ef8f1"
+theme: adoption
 ---
 ### 게시판 글 작성자, 작성일 추가/조회수 기능
 

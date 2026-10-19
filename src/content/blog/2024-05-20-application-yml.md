@@ -4,6 +4,7 @@ date: 2024-05-20
 description: "완전하게 이해하지 못한 코드를 구글에서 가져오다보니 코드의 양은 점점 많아지는데 머릿속은 점점 더 하얘지는 것 같다."
 source: medium
 original: "https://medium.com/@sj.youns1027/application-yml-%EC%84%A4%EC%A0%95-%EB%9C%AF%EC%96%B4%EB%B3%B4%EA%B8%B0-857de5830894"
+theme: learned
 ---
 ## application.yml 설정 뜯어보기
 

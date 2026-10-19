@@ -4,6 +4,7 @@ date: 2024-06-12
 description: "as-is"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8-%EC%B0%BE%EA%B8%B0-%EA%B8%B0%EB%8A%A5-%EC%BD%94%EB%93%9C-%EB%A6%AC%ED%8E%99%ED%86%A0%EB%A7%81-2f18bbf05398"
+theme: adoption
 ---
 ## Project_Preg&Birth- 비밀번호 찾기 기능 코드 리펙토링
 

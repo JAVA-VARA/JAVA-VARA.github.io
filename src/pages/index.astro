@@ -4,26 +4,27 @@ import { allPosts, byYear, ymd, THEMES } from '../lib/posts';
 
 const posts = await allPosts();
 const years = byYear(posts);
-const journalCount = posts.filter((p) => p.data.source === 'journal').length;
 const mainCount = posts.filter((p) => p.data.category !== 'coding-test').length;
 ---
 <Base title="윤석주">
   <section class="intro">
-    <h1>막힌 것, 바꾼 것, 배운 것</h1>
-    <p>개발하며 겪은 문제와 선택을 적는 노트. 글 {mainCount}편.</p>
+    <h1>반복을 줄이는 개발자의 기록</h1>
+    <p>막힌 곳은 어떻게 풀었고, 무엇을 왜 바꿨는지 적는다. 글 {mainCount}편.</p>
   </section>
 
   <div class="filters" role="group" aria-label="글 고르기">
     <button type="button" data-filter="all" aria-pressed="true">전체</button>
-    {journalCount > 0 && Object.entries(THEMES).map(([k, label]) => (
+    {Object.entries(THEMES).map(([k, label]) => (
       <button type="button" data-filter={k} aria-pressed="false">{label}</button>
     ))}
     <button type="button" data-filter="coding-test" aria-pressed="false">코딩테스트</button>
   </div>
 
-  {years.map(([year, list]) => (
-    <section class="year" data-year hidden={list.every((p) => p.data.category === 'coding-test')}>
-      <h2>{year}</h2>
+  <p class="year-tools"><button type="button" id="toggle-years">모두 펼치기</button></p>
+
+  {years.map(([year, list], i) => (
+    <details class="year" data-year open={i < 3} hidden={list.every((p) => p.data.category === 'coding-test')}>
+      <summary><h2>{year}</h2> <span class="count"></span></summary>
       <ul class="posts">
         {list.map((p) => (
           <li data-theme={p.data.theme ?? ''} data-category={p.data.category ?? ''} hidden={p.data.category === 'coding-test'}>
@@ -36,7 +37,7 @@ const mainCount = posts.filter((p) => p.data.category !== 'coding-test').length;
           </li>
         ))}
       </ul>
-    </section>
+    </details>
   ))}
 
   <script>
@@ -49,10 +50,32 @@ const mainCount = posts.filter((p) => p.data.category !== 'coding-test').length;
           const coding = li.dataset.category === 'coding-test';
           li.hidden = f === 'coding-test' ? !coding : coding || !(f === 'all' || li.dataset.theme === f);
         }
-        for (const y of document.querySelectorAll<HTMLElement>('[data-year]')) {
-          y.hidden = !y.querySelector('li:not([hidden])');
-        }
+        countYears();
       });
     }
+
+    // 연도마다 보이는 글 수를 적고, 글이 없는 연도는 숨긴다
+    const years = document.querySelectorAll<HTMLDetailsElement>('[data-year]');
+    function countYears() {
+      for (const y of years) {
+        const n = y.querySelectorAll('li:not([hidden])').length;
+        y.hidden = n === 0;
+        y.querySelector('.count')!.textContent = `${n}편`;
+      }
+      syncToggle();
+    }
+
+    const toggle = document.getElementById('toggle-years')!;
+    function syncToggle() {
+      const allOpen = [...years].every((y) => y.hidden || y.open);
+      toggle.textContent = allOpen ? '모두 접기' : '모두 펼치기';
+    }
+    toggle.addEventListener('click', () => {
+      const open = toggle.textContent === '모두 펼치기';
+      years.forEach((y) => (y.open = open));
+      syncToggle();
+    });
+    years.forEach((y) => y.addEventListener('toggle', syncToggle));
+    countYears();
   </script>
 </Base>

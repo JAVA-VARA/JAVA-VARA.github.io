@@ -4,6 +4,7 @@ date: 2023-12-05
 description: "첨부파일 업로드/다운로드-1"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-13-618222b315ec"
+theme: adoption
 ---
 첨부 파일 업로드/다운로드 기능을 추가했다. 기능 구현은 크게 3단계로 진행을 했다.
 

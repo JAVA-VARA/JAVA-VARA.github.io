@@ -4,6 +4,7 @@ date: 2024-01-11
 description: "Github Action에서 CI/CD 를 했는데 gradle build 과정 중에 error 가 발생했다."
 source: medium
 original: "https://medium.com/@sj.youns1027/github-action-2083d46e7a25"
+theme: problem-solving
 ---
 Github Action에서 CI/CD 를 했는데 gradle build 과정 중에 error 가 발생했다.
 

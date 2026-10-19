@@ -4,6 +4,7 @@ date: 2024-01-26
 description: "@RequiredArgsConstructor"
 source: medium
 original: "https://medium.com/@sj.youns1027/java-lang-nullpointerexception-41cae12b8d5d"
+theme: problem-solving
 ---
 ## java.lang.NullPointerException: Cannot invoke “sjspring.shop.pregAndBirthDeveloper.service.UserService.findByEmail(String)” because “this.userService” is null
 

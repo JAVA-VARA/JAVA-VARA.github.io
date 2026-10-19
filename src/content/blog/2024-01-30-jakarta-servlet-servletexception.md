@@ -4,6 +4,7 @@ date: 2024-01-30
 description: "이미지 리사이징 기능 추가 후 TEST 진행 중에 아래와 같은 에러를 만났다."
 source: medium
 original: "https://medium.com/@sj.youns1027/jakarta-servlet-servletexception-c20699ea6f44"
+theme: problem-solving
 ---
 ## jakarta.servlet.ServletException: Handler dispatch failed: java.lang.OutOfMemoryError: Java heap space
 

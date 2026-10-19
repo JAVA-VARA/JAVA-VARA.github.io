@@ -4,6 +4,7 @@ date: 2024-05-21
 description: "QuizResultRequestDto에서 퀴즈 결과를 불러올 때 error가 발생했다."
 source: medium
 original: "https://medium.com/@sj.youns1027/org-springframework-http-converter-httpmessagenotreadableexception-c436291cb4e5"
+theme: problem-solving
 ---
 ## [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot construct instance of  (although at least one Creator exists): cannot deserialize from Object value (no delegate- or property-based Creator)]
 

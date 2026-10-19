@@ -4,6 +4,7 @@ date: 2024-01-31
 description: "[문제 상황]"
 source: medium
 original: "https://medium.com/@sj.youns1027/image-mime-type-0784475563fa"
+theme: problem-solving
 ---
 ## Image MIME-TYPE_Convert HEIC to PNG
 

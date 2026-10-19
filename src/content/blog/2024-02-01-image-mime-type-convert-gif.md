@@ -4,6 +4,7 @@ date: 2024-02-01
 description: "파일 업로드 후 잘만 움직이던 gif 파일이 image reszing 을 거치니 굳어버렸다."
 source: medium
 original: "https://medium.com/@sj.youns1027/image-mime-type-51742a9813ec"
+theme: problem-solving
 ---
 파일 업로드 후 잘만 움직이던 gif 파일이 image reszing 을 거치니 굳어버렸다.
 

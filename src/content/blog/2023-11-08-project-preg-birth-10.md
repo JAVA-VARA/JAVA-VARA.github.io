@@ -4,6 +4,7 @@ date: 2023-11-08
 description: "게시판 카테고리 선택 기능"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-10-352d1b290abd"
+theme: adoption
 ---
 ### 게시판 카테고리 선택 기능
 

@@ -4,6 +4,7 @@ date: 2024-06-07
 description: "성능테스트-4"
 source: medium
 original: "https://medium.com/@sj.youns1027/football-quiz-project-f5dba57466b9"
+theme: performance
 ---
 ### Redis를 이용해 Cache를 적용해보았으니 이제 다시 성능(N**umber of user수 변화에 따른 Response time**)을 테스트해보자!
 

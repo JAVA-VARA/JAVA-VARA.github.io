@@ -4,6 +4,7 @@ date: 2024-06-06
 description: "성능테스트-2"
 source: medium
 original: "https://medium.com/@sj.youns1027/football-quiz-project-bf8f00ff90be"
+theme: performance
 ---
 이전 글에서 아래 4개의 경우의 수에 대해 JMTER를 통해 number of user(thread) 수 변화에 따른 Response time 에 대해 확인했다.  
 1) 10초 동안 100개의 요청 (10 req/s)  

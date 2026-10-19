@@ -8,7 +8,7 @@ const blog = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     description: z.string().optional(),
-    theme: z.enum(['problem-solving', 'adoption', 'learned']).optional(),
+    theme: z.enum(['problem-solving', 'adoption', 'learned', 'performance']).optional(),
     tags: z.array(z.string()).default([]),
     source: z.enum(['medium', 'journal']).default('journal'),
     original: z.string().optional(),

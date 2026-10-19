@@ -4,6 +4,7 @@ date: 2024-01-11
 description: "회원 가입 기능을 수정했다. 이전에는 아무 정보를 입력하지 않아도 form이 제출이 되었으나, 필수 정보를 입력하지 않으면 안내 문구가 뜨도록 회원 가입 각 항목에 required 문구를 추가했다."
 source: medium
 original: "https://medium.com/@sj.youns1027/button-type-89f75ae695ad"
+theme: problem-solving
 ---
 회원 가입 기능을 수정했다. 이전에는 아무 정보를 입력하지 않아도 form이 제출이 되었으나, 필수 정보를 입력하지 않으면 안내 문구가 뜨도록 회원 가입 각 항목에 required 문구를 추가했다.
 

@@ -4,6 +4,7 @@ date: 2024-06-13
 description: "이전에 사용자가 글 작성할 때 이미지도 업로드할 수 있는 로직을 구현하고 테스트까지 만든 후 블로그에 글을 작성했었는데, 이번에는 추가적인 mime-type을 테스트 해보고, test도 가독성 있고 수정하기 편하도록 리펙토링 했다."
 source: medium
 original: "https://medium.com/@sj.youns1027/%EC%9D%B4%EB%AF%B8%EC%A7%80%EC%97%85%EB%A1%9C%EB%93%9C-e43e8a9ff9df"
+theme: adoption
 ---
 ## Image MIME-TYPE Test code 리펙토링
 

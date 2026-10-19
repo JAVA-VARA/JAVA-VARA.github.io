@@ -6,6 +6,7 @@ export const THEMES = {
   'problem-solving': '문제 해결',
   adoption: '도입',
   learned: '배운 것',
+  performance: '성능 개선',
 } as const;
 
 export async function allPosts(): Promise<Post[]> {

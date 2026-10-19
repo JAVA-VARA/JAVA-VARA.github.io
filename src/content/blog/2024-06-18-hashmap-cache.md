@@ -4,6 +4,7 @@ date: 2024-06-18
 description: "이전에 Redis cache를 사용해 서버의 성능을 높혀보았다. [성능 테스트 링크]"
 source: medium
 original: "https://medium.com/@sj.youns1027/hashmap%EC%9C%BC%EB%A1%9C-cache-%EA%B5%AC%ED%98%84%ED%95%B4%EB%B3%B4%EA%B8%B0-5e300860ed57"
+theme: performance
 ---
 ## HashMap으로 Cache 구현해보기
 

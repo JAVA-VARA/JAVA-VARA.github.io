@@ -4,6 +4,7 @@ date: 2024-05-21
 description: "ArrayList 는 index가 있고 LinkedList는 각 원소마다 앞,뒤 원소의 위치값을 가지고 있다. 이에 따라 조회, 삽입, 삭제 시 성능의 차이가 발생한다."
 source: medium
 original: "https://medium.com/@sj.youns1027/arraylist-%EC%99%80-linkedlist%EC%9D%98-%EC%B0%A8%EC%9D%B4-8ea025326c3d"
+theme: learned
 ---
 ![](/images/medium/8ea025326c3d/1.png)
 

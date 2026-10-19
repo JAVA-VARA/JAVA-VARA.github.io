@@ -4,6 +4,7 @@ date: 2024-01-11
 description: "배포(feat. AWS)-3"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-1x-b81c193287d2"
+theme: adoption
 ---
 ## [문제 상황]
 

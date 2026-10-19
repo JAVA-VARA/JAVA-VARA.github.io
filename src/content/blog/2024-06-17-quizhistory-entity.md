@@ -4,6 +4,7 @@ date: 2024-06-17
 description: "퀴즈 히스토리 테이블은 사용자가 퀴즈를 풀 때 선택한 팀의 ID, 정답 개수, 문제를 풀었던 시간을 기록하고 있다."
 source: medium
 original: "https://medium.com/@sj.youns1027/quizhistory-entity-%EB%B3%80%EA%B2%BD-0f73cb6bb03b"
+theme: adoption
 ---
 ## QuizHistory entity 변경
 

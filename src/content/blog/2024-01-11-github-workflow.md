@@ -4,6 +4,7 @@ date: 2024-01-11
 description: "프로젝트 진행 시 지속적인 통합/배포를 위해 .github/workflow/cicd.yml를 아래와 같이 작성했다."
 source: medium
 original: "https://medium.com/@sj.youns1027/github-workflow%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC-e6ab62ea64e2"
+theme: adoption
 ---
 프로젝트 진행 시 지속적인 통합/배포를 위해 .github/workflow/cicd.yml를 아래와 같이 작성했다.
 

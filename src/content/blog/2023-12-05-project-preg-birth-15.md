@@ -4,6 +4,7 @@ date: 2023-12-05
 description: "첨부파일 업로드/다운로드-3"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-15-43954a965d21"
+theme: adoption
 ---
 ### 이미지 파일 설정 변경 및 다운로드
 

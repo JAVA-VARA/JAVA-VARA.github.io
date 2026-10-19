@@ -4,6 +4,7 @@ date: 2023-11-08
 description: "게시글 조회수 기능 수정"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-11-a910714e1ac4"
+theme: adoption
 ---
 ### 게시글 조회수 기능 수정
 

@@ -2,17 +2,17 @@
 import Base from '../layouts/Base.astro';
 
 // 이력서. 원본은 2024년 Rallit 이력서이고, 2026-10 에 진행 중인 프로젝트와 기술을 더했다.
-// 임상 프로젝트는 기관명·연구명·데이터 내용을 쓰지 않는다.
+// 소속(서울대학교병원 대장항문외과)은 사용자가 적기로 했다. 연구명·데이터 내용은 쓰지 않는다.
 const skills = [
-  { group: '지금 주로 쓰는 것', items: ['Python', 'SQL', 'MySQL', 'pytest', 'Claude Code', 'Codex', 'Astro', 'GitHub Actions'] },
+  { group: '지금 주로 쓰는 것', items: ['Python', 'SQL', 'MySQL', 'pytest', 'TypeScript', 'Next.js', 'PostgreSQL', 'Prisma', 'Claude Code', 'Codex', 'Astro', 'GitHub Actions'] },
   { group: '웹 서비스를 만들 때 쓴 것', items: ['Java', 'Spring Boot', 'Thymeleaf', 'JavaScript', 'Redis', 'Docker', 'Google Cloud Platform', 'GitHub'] },
 ];
 
 const projects = [
   {
     name: '임상 연구 데이터 전처리 자동화',
-    kind: '진행 중인 프로젝트',
-    period: '2026.08. ~ 진행 중',
+    kind: '서울대학교병원 대장항문외과',
+    period: '2024.07. ~ 진행 중',
     summary:
       '병원 데이터 웨어하우스에서 뽑은 원자료를 지정한 폴더에 올리면, 변수별 정제·표준화·검증을 거쳐 연구별 eCRF 양식의 Excel 로 내보내는 파이프라인입니다. 사람은 자동화가 이상하다고 표시한 데이터만 검토합니다.',
     points: [
@@ -23,6 +23,19 @@ const projects = [
       ['개인정보 보호', '환자 식별정보는 저장소에 남기지 않고, 테스트는 합성 데이터로만 작성(테스트 파일 136개)'],
     ],
     links: [] as [string, string][],
+  },
+  {
+    name: '임상시험 Q&A 아카이브',
+    kind: '개인 프로젝트 · 운영 중',
+    period: '2026.08. ~ 운영 중',
+    summary:
+      '제약·바이오 임상시험 실무자(CRA·CRC) 약 1,500명이 모인 오픈카톡방에서 같은 질문이 되풀이되고 답이 대화에 묻히는 문제를 풀려고 만든 검색형 Q&A 사이트입니다. 2026-10-19 기준 공개 Q&A 3,160건, 누적 방문자 676명, 검색 1,420회(운영자 제외)입니다.',
+    points: [
+      ['자동 수집', '매일 새벽 카카오톡의 공식 "대화 내보내기"를 Win32 창 메시지로 실행하고, 대화를 침묵 구간 기준 세션으로 나눈 뒤 LLM(Claude)이 질문·답변 쌍을 뽑아 저장. 로컬 DB 복호화와 UI Automation 을 먼저 시도했다가 막혀 방식을 바꿈'],
+      ['사람 검토', '뽑힌 Q&A 는 검토 대기로 쌓이고 관리자가 승인한 것만 공개. 답이 엇갈리거나 없는 질문은 따로 표시해 채울 곳을 보여 줌'],
+      ['운영 지표', '일일 방문자(신규·재방문), 검색어, 결과 0건 검색 비율을 보는 관리자 대시보드와 배치 실패 알림'],
+    ],
+    links: [],
   },
   {
     name: 'usage-limit-resume',
@@ -95,7 +108,8 @@ const projects = [
 ---
 <Base title="이력서" description="윤석주의 이력서. 진행 중인 프로젝트, 기술, 경력.">
   <article class="resume">
-    <header class="post-head">
+    <header class="post-head resume-head">
+      <img class="photo" src="/images/profile.png" alt="윤석주 사진" width="150" height="149" />
       <h1>윤석주</h1>
       <p class="contact"><a href="mailto:sj.youns1027@gmail.com">sj.youns1027@gmail.com</a> <a href="https://github.com/JAVA-VARA">github.com/JAVA-VARA</a></p>
     </header>
@@ -141,6 +155,14 @@ const projects = [
 
     <section class="cv">
       <h2>경력</h2>
+      <div class="entry">
+        <div class="entry-head">
+          <h3>서울대학교병원 대장항문외과</h3>
+          <span class="period">2024.07. ~ 재직 중</span>
+        </div>
+        <p class="kind">연구원</p>
+        <p>대장항문외과 임상 연구의 데이터를 다룹니다. 병원 데이터 웨어하우스에서 뽑은 원자료를 연구별 양식에 맞게 정리하는 일을 자동화하고 있으며, 위 "임상 연구 데이터 전처리 자동화" 프로젝트가 이 업무입니다.</p>
+      </div>
       <div class="entry">
         <div class="entry-head">
           <h3>주식회사 리니칼 코리아</h3>
@@ -198,6 +220,7 @@ const projects = [
     <section class="cv">
       <h2>자격증·외국어</h2>
       <dl class="points">
+        <dt>SQLD</dt><dd>한국데이터산업진흥원, 2024.09.20.</dd>
         <dt>임상병리사</dt><dd>보건복지부, 2019.03.</dd>
         <dt>영어</dt><dd>비즈니스 회화 가능</dd>
       </dl>

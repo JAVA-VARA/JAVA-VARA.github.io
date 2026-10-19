@@ -4,6 +4,7 @@ date: 2023-12-22
 description: "배포(feat. AWS)-2"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-1x-a3917c158c3f"
+theme: adoption
 ---
 배포한 직후 만난 문제 상황과 해결 과정에 대해 기록해두고자 한다.
 

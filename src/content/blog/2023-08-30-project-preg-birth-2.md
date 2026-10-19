@@ -4,6 +4,7 @@ date: 2023-08-30
 description: "프로젝트 생성/스토리보드 구상"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-2-7594319b0ad4"
+theme: adoption
 ---
 ### 프로젝트 생성/스토리보드 구상
 

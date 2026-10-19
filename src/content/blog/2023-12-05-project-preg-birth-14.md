@@ -4,6 +4,7 @@ date: 2023-12-05
 description: "첨부 파일 업로드/다운로드-2"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-14-e655f02bcd83"
+theme: adoption
 ---
 1. AttachedFile과 Board table join
 2. 여러 개의 파일을 저장할 수 있도록 변경

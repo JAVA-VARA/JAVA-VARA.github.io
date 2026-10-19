@@ -4,6 +4,7 @@ date: 2023-09-13
 description: "로그인/회원 가입(JWT 인증 기반으로 재구성)"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-5-32764f1bb887"
+theme: adoption
 ---
 ### 로그인/회원 가입(JWT 인증 기반으로 재구성)
 

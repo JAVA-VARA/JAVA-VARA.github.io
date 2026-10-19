@@ -4,6 +4,7 @@ date: 2024-05-20
 description: "유저가 맞춘 문제 개수에 따라 레벨을 반환하는 로직에 대한 test case를 만들었다."
 source: medium
 original: "https://medium.com/@sj.youns1027/paramiterized-test-e0de92330a5b"
+theme: adoption
 ---
 유저가 맞춘 문제 개수에 따라 레벨을 반환하는 로직에 대한 test case를 만들었다.
 

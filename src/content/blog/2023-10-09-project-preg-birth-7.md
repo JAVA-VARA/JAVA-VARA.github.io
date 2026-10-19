@@ -4,6 +4,7 @@ date: 2023-10-09
 description: "비밀번호 찾기 기능 구현"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-7-ad6466fcf15f"
+theme: adoption
 ---
 ### 비밀번호 찾기 기능 구현
 

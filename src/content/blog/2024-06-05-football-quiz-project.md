@@ -4,6 +4,7 @@ date: 2024-06-05
 description: "성능테스트-1"
 source: medium
 original: "https://medium.com/@sj.youns1027/football-quiz-project-e7b7f0b15faa"
+theme: performance
 ---
 서비스를 배포하고, 인터넷 커뮤니티에 광고도 했다. 약 한 달 간 무려 77명의 사용자가 이용했다!!(조작 아님)
 

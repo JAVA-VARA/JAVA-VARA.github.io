@@ -5,6 +5,7 @@ description: "In-context learning 샘플 수에 따른 성능 비교/분석"
 tags: [OUTTA AI, LLM]
 source: medium
 original: "https://medium.com/@sj.youns1027/outta-ai-task-1-36103caaa521"
+theme: learned
 ---
 ## 개요
 In-context learning은 대형 언어 모델이 사전 훈련된 맥락을 이용하여 

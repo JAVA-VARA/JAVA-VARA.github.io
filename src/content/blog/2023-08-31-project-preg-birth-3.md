@@ -4,6 +4,7 @@ date: 2023-08-31
 description: "게시판 CRUD 기본 기능 구현"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-3-c4f86d3d1694"
+theme: adoption
 ---
 ### 게시판 CRUD 기본 기능 구현
 

@@ -4,6 +4,7 @@ date: 2023-07-04
 description: "[링크]"
 source: medium
 original: "https://medium.com/@sj.youns1027/html-hyper-text-markup-language-9501c7efdb2b"
+theme: learned
 ---
 - <a></a>: 문자가 링크임을 알려준다.(anchor)
 - href = “url 주소”: 연결할 url 주소

@@ -4,6 +4,7 @@ date: 2023-08-29
 description: "기능 요구 사항 정리하기"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-1-61f0e8f687cc"
+theme: adoption
 ---
 ### 기능 요구 사항 정리하기
 

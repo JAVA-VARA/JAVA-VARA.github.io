@@ -4,6 +4,7 @@ date: 2024-07-02
 description: "Ranking을 계산 시 성능 개선을 위해 직접 캐시 클래스를 구현하여 사용했다.[ 링크]"
 source: medium
 original: "https://medium.com/@sj.youns1027/java-lang-classcastexception-class-java-util-arraylist-cannot-be-cast-to-class-java-util-set-8586fc5918d9"
+theme: problem-solving
 ---
 Ranking을 계산 시 성능 개선을 위해 직접 캐시 클래스를 구현하여 사용했다.[ [링크](https://medium.com/@sj.youns1027/hashmap%EC%9C%BC%EB%A1%9C-cache-%EA%B5%AC%ED%98%84%ED%95%B4%EB%B3%B4%EA%B8%B0-5e300860ed57)]
 

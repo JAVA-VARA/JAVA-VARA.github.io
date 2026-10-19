@@ -4,6 +4,7 @@ date: 2023-10-30
 description: "OAuth2 로그인 설정 추가"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-8-3362a94daf22"
+theme: adoption
 ---
 ### OAuth2 로그인 설정 추가
 

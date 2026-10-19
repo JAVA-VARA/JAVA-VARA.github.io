@@ -4,6 +4,7 @@ date: 2024-06-06
 description: "성능테스트-3"
 source: medium
 original: "https://medium.com/@sj.youns1027/football-quiz-project-ef83610c22c5"
+theme: performance
 ---
 이전 글에서는 Response time을 줄여 서비스의 성능을 높히고자 코드 레벨에서 선형 탐색을 이진 탐색으로 변경해보았다. 그러나 결과는 실패. Database 조회 시간을 줄여야한다는 결론을 도출하여 캐시를 사용해보기로 했다.
 

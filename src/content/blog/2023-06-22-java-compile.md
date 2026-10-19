@@ -4,6 +4,7 @@ date: 2023-06-22
 description: "Compile"
 source: medium
 original: "https://medium.com/@sj.youns1027/java-67bf3b260179"
+theme: learned
 ---
 **컴파일**은 **인간이 이해할 수 있는 언어로 작성된 소스 코드**(고수준 언어 : C, C++, Java 등)를 **CPU가 이해할 수 있는 언어**(저수준 언어 : 기계어)로 **번역(변환)하는 작업**
 

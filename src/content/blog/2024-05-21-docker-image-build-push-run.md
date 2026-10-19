@@ -4,6 +4,7 @@ date: 2024-05-21
 description: "수동 배포"
 source: medium
 original: "https://medium.com/@sj.youns1027/docker-image-4698a74ca471"
+theme: adoption
 ---
 1. Image build 하기
 

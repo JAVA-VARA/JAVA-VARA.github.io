@@ -4,6 +4,7 @@ date: 2023-09-27
 description: "아이디 찾기 기능 구현"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-6-2b1e9394516c"
+theme: adoption
 ---
 ### 아이디 찾기 기능 구현
 

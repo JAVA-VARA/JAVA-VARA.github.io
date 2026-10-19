@@ -4,6 +4,7 @@ date: 2024-01-23
 description: "Content-Type"
 source: medium
 original: "https://medium.com/@sj.youns1027/image-resizeing-1c07ba70e118"
+theme: problem-solving
 ---
 첨부파일 업로드 할 때, 아래 if 구문의 조건과 같이 ContentType이 이미지 파일인 경우에만 이미지 리사이징 로직이 진행되도록 코드를 작성했다.
 

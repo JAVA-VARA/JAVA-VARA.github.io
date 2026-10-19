@@ -4,6 +4,7 @@ date: 2024-01-26
 description: "기능을 만들고 test 할 때 test code를 만들어서 진행하기도 하지만, 직접 app을 실행시켜 test를 하는 경우가 많았다."
 source: medium
 original: "https://medium.com/@sj.youns1027/springboot-%EC%8B%A4%ED%96%89-%EC%8B%9C-data-sql-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%82%BD%EC%9E%85-2f3651522b41"
+theme: learned
 ---
 ## Springboot 실행 시 data.sql 데이터 삽입
 

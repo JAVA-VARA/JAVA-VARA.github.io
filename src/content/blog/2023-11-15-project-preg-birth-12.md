@@ -4,6 +4,7 @@ date: 2023-11-15
 description: "게시판 검색 기능"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-12-4e4f21a1fa71"
+theme: adoption
 ---
 ### 게시판 검색 기능
 

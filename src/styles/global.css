@@ -9,6 +9,7 @@
   --t-problem: #b3261e;
   --t-adoption: #0b6e69;
   --t-learned: #8a5a00;
+  --t-perf: #5b3fa8;
   --measure: 68ch;
 }
 @media (prefers-color-scheme: dark) {
@@ -22,6 +23,7 @@
     --t-problem: #ff8a80;
     --t-adoption: #6fd1c6;
     --t-learned: #f2c46d;
+    --t-perf: #b9a6ff;
   }
 }
 
@@ -42,8 +44,7 @@ a:hover { color: var(--accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 
 header.site, main, footer.site { max-width: calc(var(--measure) + 32px); margin: 0 auto; padding: 0 16px; }
-header.site { display: flex; align-items: baseline; justify-content: space-between; padding-top: 36px; padding-bottom: 8px; }
-header.site .name { font-weight: 800; font-size: 20px; text-decoration: none; letter-spacing: -0.01em; }
+header.site { display: flex; align-items: baseline; justify-content: flex-end; padding-top: 36px; padding-bottom: 8px; }
 header.site nav { display: flex; gap: 18px; font-size: 15px; color: var(--muted); }
 header.site nav a { text-decoration: none; }
 footer.site { color: var(--muted); font-size: 14px; padding-top: 48px; padding-bottom: 48px; }
@@ -60,8 +61,19 @@ footer.site { color: var(--muted); font-size: 14px; padding-top: 48px; padding-b
 }
 .filters button[aria-pressed='true'] { color: var(--ink); border-color: var(--ink); }
 
-.year { margin-top: 34px; }
-.year h2 { font-size: 15px; color: var(--muted); font-weight: 600; margin: 0 0 6px; }
+.year-tools { margin: 14px 0 0; text-align: right; }
+.year-tools button { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; padding: 2px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.year-tools button:hover { color: var(--accent); }
+.year { margin-top: 22px; }
+.year summary { display: flex; align-items: baseline; gap: 10px; cursor: pointer; list-style: none; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.year summary::-webkit-details-marker { display: none; }
+.year summary::before { content: ''; width: 7px; height: 7px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(-45deg); transition: transform 120ms; align-self: center; }
+.year[open] summary::before { transform: rotate(45deg); }
+.year summary:hover h2 { color: var(--accent); }
+.year summary:hover::before { border-color: var(--accent); }
+.year h2 { font-size: 15px; color: var(--ink); font-weight: 700; margin: 0; }
+.year .count { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.year .posts { margin-top: 6px; }
 .posts { list-style: none; margin: 0; padding: 0; }
 .posts li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 4px; align-items: baseline; padding: 7px 0; }
 .posts a { text-decoration: none; font-weight: 600; }
@@ -71,7 +83,9 @@ footer.site { color: var(--muted); font-size: 14px; padding-top: 48px; padding-b
 .theme[data-theme='problem-solving'] { color: var(--t-problem); }
 .theme[data-theme='adoption'] { color: var(--t-adoption); }
 .theme[data-theme='learned'] { color: var(--t-learned); }
+.theme[data-theme='performance'] { color: var(--t-perf); }
 .posts li[hidden], .year[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { .year summary::before { transition: none; } }
 
 /* ---- 글 ---- */
 .post-head { padding: 40px 0 20px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
@@ -101,6 +115,7 @@ footer.site { color: var(--muted); font-size: 14px; padding-top: 48px; padding-b
 }
 
 /* ---- 이력서 ---- */
+.resume-head .photo { display: block; width: 150px; height: auto; border-radius: 50% 8px 50% 50%; margin-bottom: 18px; }
 .resume .contact { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; color: var(--muted); font-size: 15px; }
 .resume .lead { padding-left: 1.1em; }
 .resume .lead li { margin-bottom: 0.5em; }

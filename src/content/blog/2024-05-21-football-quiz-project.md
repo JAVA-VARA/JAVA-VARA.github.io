@@ -4,6 +4,7 @@ date: 2024-05-21
 description: "리펙토링"
 source: medium
 original: "https://medium.com/@sj.youns1027/football-quiz-project-4b799b885b48"
+theme: adoption
 ---
 ## 퀴즈 풀기, 정답/오답 여부 확인
 

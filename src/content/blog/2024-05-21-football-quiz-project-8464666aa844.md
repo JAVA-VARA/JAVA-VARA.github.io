@@ -4,6 +4,7 @@ date: 2024-05-21
 description: "리펙토링"
 source: medium
 original: "https://medium.com/@sj.youns1027/football-quiz-project-8464666aa844"
+theme: adoption
 ---
 각 팀별로 퀴즈에 몇명이 참여했는지 사용자에게 보여주고 싶었다.
 

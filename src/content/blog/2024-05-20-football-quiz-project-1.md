@@ -4,6 +4,7 @@ date: 2024-05-20
 description: "요구 사항 정리"
 source: medium
 original: "https://medium.com/@sj.youns1027/football-quiz-project-1-3702383d3f49"
+theme: adoption
 ---
 ## 요구 사항 정리
 

@@ -4,6 +4,7 @@ date: 2024-05-22
 description: "문제 수정 요청 기능 추가"
 source: medium
 original: "https://medium.com/@sj.youns1027/football-quiz-project-172859957dfc"
+theme: adoption
 ---
 ### 문제 수정 요청 기능 추가
 

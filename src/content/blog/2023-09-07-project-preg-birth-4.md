@@ -4,6 +4,7 @@ date: 2023-09-07
 description: "로그인/회원 가입"
 source: medium
 original: "https://medium.com/@sj.youns1027/project-preg-birth-4-18d4809f6fe6"
+theme: adoption
 ---
 ## [Commit message]
 
