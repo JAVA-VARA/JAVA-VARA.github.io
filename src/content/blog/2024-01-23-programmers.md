@@ -4,6 +4,7 @@ date: 2024-01-23
 description: "LV02"
 source: medium
 original: "https://medium.com/@sj.youns1027/programmers-63cb5c17d365"
+category: coding-test
 ---
 LV02
 

@@ -26,9 +26,7 @@ const d = post.data;
       <Content />
     </div>
     <footer class="post-foot">
-      {d.source === 'medium' && d.original
-        ? <p>Medium 에 먼저 쓴 글을 옮겼다. <a href={d.original}>원문</a></p>
-        : <p><a href="/">다른 글 보기</a></p>}
+      <p><a href="/">다른 글 보기</a></p>
     </footer>
   </article>
 </Base>

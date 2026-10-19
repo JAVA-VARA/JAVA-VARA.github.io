@@ -1,15 +1,206 @@
 ---
 import Base from '../layouts/Base.astro';
+
+// 이력서. 원본은 2024년 Rallit 이력서이고, 2026-10 에 진행 중인 프로젝트와 기술을 더했다.
+// 임상 프로젝트는 기관명·연구명·데이터 내용을 쓰지 않는다.
+const skills = [
+  { group: '지금 주로 쓰는 것', items: ['Python', 'SQL', 'MySQL', 'pytest', 'Claude Code', 'Codex', 'Astro', 'GitHub Actions'] },
+  { group: '웹 서비스를 만들 때 쓴 것', items: ['Java', 'Spring Boot', 'Thymeleaf', 'JavaScript', 'Redis', 'Docker', 'Google Cloud Platform', 'GitHub'] },
+];
+
+const projects = [
+  {
+    name: '임상 연구 데이터 전처리 자동화',
+    kind: '진행 중인 프로젝트',
+    period: '2026.08. ~ 진행 중',
+    summary:
+      '병원 데이터 웨어하우스에서 뽑은 원자료를 지정한 폴더에 올리면, 변수별 정제·표준화·검증을 거쳐 연구별 eCRF 양식의 Excel 로 내보내는 파이프라인입니다. 사람은 자동화가 이상하다고 표시한 데이터만 검토합니다.',
+    points: [
+      ['변수 단위 설계', '변수 112개를 "추출 쿼리 + 전처리 로직 + 검증 규칙" 한 묶음으로 관리. 변수 폴더에 정의 파일만 두면 자동으로 인식되어, 변수 하나를 고칠 때 그 폴더 안에서 끝남'],
+      ['단방향 계층', 'core ← infra/domain ← variables ← pipeline → exporters 순서로 의존 방향을 고정하고, 쿼리는 .sql 파일과 파라미터 바인딩으로만 다룸'],
+      ['사람 검토 화면', '서술형 기록의 자동 판정을 사람이 직접 보며 정확도를 재는 검토 화면과 판단 대기열 페이지를 만듦'],
+      ['AI 에이전트 협업', 'Claude Code 가 설계·리뷰·커밋을 맡고 Codex·Jules 에 구현을 나눠 맡기는 흐름. 커밋 전 리뷰, 작업 공간 분리 같은 규칙은 훅으로 강제'],
+      ['개인정보 보호', '환자 식별정보는 저장소에 남기지 않고, 테스트는 합성 데이터로만 작성(테스트 파일 136개)'],
+    ],
+    links: [] as [string, string][],
+  },
+  {
+    name: 'usage-limit-resume',
+    kind: '오픈소스 · Claude Code 플러그인',
+    period: '2026.10.',
+    summary:
+      'Claude Code 의 사용량 한도에 걸려 멈춘 백그라운드 작업을 한도가 풀린 뒤 자동으로 이어서 실행하는 플러그인입니다. Windows 와 macOS 를 지원합니다.',
+    points: [
+      ['한도 감지', '한도로 멈춘 순간의 메시지에서 풀리는 시각을 읽고, 운영체제 예약 작업(Windows 작업 스케줄러, macOS LaunchAgent)을 그 2분 뒤로 등록'],
+      ['안전장치', '이미 손으로 이어 간 작업은 건드리지 않고, 같은 작업은 24시간에 최대 3번까지만 재개'],
+    ],
+    links: [['GitHub', 'https://github.com/JAVA-VARA/usage-limit-resume']],
+  },
+  {
+    name: '이 블로그와 글감 자동 수집',
+    kind: '개인 프로젝트',
+    period: '2026.10. ~ 진행 중',
+    summary:
+      '그날 보낸 프롬프트·커밋·결정 기록을 모아 글감을 뽑고, 고른 글감으로 초안을 쓰고, 검토한 글을 발행하기까지를 자동으로 잇는 흐름입니다.',
+    points: [
+      ['글감 → 초안 → 발행', '하루 한 번 글감을 쌓고, 허브 화면에서 고르고 의견을 남기면 정해 둔 틀(문제 해결 / 도입 / 배운 것)로 초안을 씀'],
+      ['발행 전 검사', '발행 직전에 주민번호·전화번호·환자 정보 같은 식별정보를 검사해, 걸리면 발행을 막음'],
+    ],
+    links: [['GitHub', 'https://github.com/JAVA-VARA/JAVA-VARA.github.io']],
+  },
+  {
+    name: 'term-fit',
+    kind: '개발 중 · Claude Code 플러그인',
+    period: '2026.10. ~ 진행 중',
+    summary:
+      '두루뭉술하게 쓴 요청을 한국 개발 현장에서 실제로 쓰는 용어로 다듬고, 바꾼 용어를 용어장으로 익히게 하는 플러그인입니다.',
+    points: [
+      ['적재와 교정', '프롬프트를 조용히 모아 두었다가, 부르거나 100건이 쌓이면 모호한 요청만 골라 다듬음'],
+      ['복습 화면', '내 요청과 다듬은 요청을 나란히 보여 주고, 용어장에서 뜻을 가렸다가 하나씩 확인'],
+    ],
+    links: [],
+  },
+  {
+    name: 'Football Quiz Project',
+    kind: '개인 프로젝트',
+    period: '2024.03. ~ 2024.06.',
+    summary:
+      '축구 선수의 사진을 보고 이름을 맞추는 퀴즈 서비스입니다. 유럽 5대 리그 96개 팀의 퀴즈를 제공했습니다(2024-06-30 기준 이용자 77명).',
+    points: [
+      ['데이터 수집', '축구 리그·팀·선수 정보를 크롤링해 문제 출제에 쓰는 기능 개발'],
+      ['성능 개선', '캐시를 써서 결과 페이지 응답 시간을 최대 100초에서 3초로 줄임'],
+    ],
+    links: [
+      ['GitHub', 'https://github.com/JAVA-VARA/football-quiz-project'],
+      ['성능 테스트 글', '/blog/2024-06-18-football-quiz-project/'],
+    ],
+  },
+  {
+    name: 'Pregnant And Birth Project',
+    kind: '개인 프로젝트',
+    period: '2023.08. ~ 2024.02.(7개월)',
+    summary:
+      '흩어져 있는 임신·육아 정보를 정리하고 사용자끼리 소통할 수 있게 한 게시판 웹 서비스입니다. 첫 개인 프로젝트로 Spring Boot 3 를 익혔습니다.',
+    points: [
+      ['게시판', '검색, 스크랩, 댓글, 페이징, 첨부파일 업로드·다운로드, 조회수 관리'],
+      ['회원', 'OAuth2(Google) 로그인, 폼 로그인, ID/PW 찾기, 개인정보 변경'],
+      ['이미지', 'ImageMagick 을 이용한 이미지 리사이징'],
+    ],
+    links: [
+      ['GitHub', 'https://github.com/JAVA-VARA/PandB_Project'],
+      ['개발 기록', '/blog/2023-08-29-project-preg-birth-1/'],
+    ],
+  },
+];
 ---
-<Base title="소개">
-  <article>
+<Base title="이력서" description="윤석주의 이력서. 진행 중인 프로젝트, 기술, 경력.">
+  <article class="resume">
     <header class="post-head">
-      <h1>소개</h1>
+      <h1>윤석주</h1>
+      <p class="contact"><a href="mailto:sj.youns1027@gmail.com">sj.youns1027@gmail.com</a> <a href="https://github.com/JAVA-VARA">github.com/JAVA-VARA</a></p>
     </header>
+
     <div class="prose">
-      <!-- TODO(사용자): 자기소개·경력·프로젝트를 직접 채운다. 지어낸 내용을 넣지 않는다 -->
-      <p>윤석주. 개발하며 막힌 것, 바꾼 것, 배운 것을 이 블로그에 적는다.</p>
-      <p>글은 세 갈래로 쓴다: 문제 해결(원인 → 해결), 도입(기존 → 새것, 트레이드오프), 배운 것.</p>
+      <ul class="lead">
+        <li>반복되는 업무를 자동화하는 과정에서 프로그래밍에 흥미를 느껴 개발자가 되기로 결심했습니다.</li>
+        <li>새로운 지식을 배우고 이를 실제로 적용하는 것을 즐기며, 끊임없이 성장하고 발전하고자 합니다.</li>
+        <li>프로젝트 진행 중 마주한 문제 상황을 극복하는 과정과 새롭게 얻은 지식을 블로그에 기록하고 있으며, 중복되는 코드를 최소화하고 재사용성과 확장성이 높은 코드를 작성하기 위해 고민합니다.</li>
+        <li>지금은 임상 연구 데이터 전처리를 자동화하면서, Claude Code·Codex 같은 AI 코딩 도구와 함께 일하는 방식을 직접 만들어 쓰고 있습니다.</li>
+      </ul>
     </div>
+
+    <section class="cv">
+      <h2>기술</h2>
+      {skills.map((s) => (
+        <div class="skill-row">
+          <h3>{s.group}</h3>
+          <ul class="chips">{s.items.map((i) => <li>{i}</li>)}</ul>
+        </div>
+      ))}
+    </section>
+
+    <section class="cv">
+      <h2>프로젝트</h2>
+      {projects.map((p) => (
+        <div class="entry">
+          <div class="entry-head">
+            <h3>{p.name}</h3>
+            <span class="period">{p.period}</span>
+          </div>
+          <p class="kind">{p.kind}</p>
+          <p>{p.summary}</p>
+          <dl class="points">
+            {p.points.map(([k, v]) => (<><dt>{k}</dt><dd>{v}</dd></>))}
+          </dl>
+          {p.links.length > 0 && (
+            <p class="links">{p.links.map(([label, href]) => <a href={href}>{label}</a>)}</p>
+          )}
+        </div>
+      ))}
+    </section>
+
+    <section class="cv">
+      <h2>경력</h2>
+      <div class="entry">
+        <div class="entry-head">
+          <h3>주식회사 리니칼 코리아</h3>
+          <span class="period">2019.05. ~ 2022.12.(3년 8개월)</span>
+        </div>
+        <p class="kind">사원, 임상팀(정규직)</p>
+        <p>임상시험을 진행할 때 제약회사를 대신해, 병원이 임상시험계획서와 규정에 맞게 연구를 진행하도록 지원했습니다.</p>
+        <ul>
+          <li>연구 진행에 필요한 문서 개발</li>
+          <li>임상시험 데이터의 정확성·정합성 검토</li>
+          <li>연구 윤리 위원회와 대상자 안전성 등에 대한 논의</li>
+          <li>임상시험계획서와 규정에 대한 교육</li>
+          <li>대상자 모집 현황, 연구 진행 현황 보고서 작성</li>
+          <li>연구 중 발생한 이슈의 시정 조치와 재발 방지 대책 수립</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="cv">
+      <h2>교육</h2>
+      <div class="entry">
+        <div class="entry-head">
+          <h3>연세대학교(원주)</h3>
+          <span class="period">2012.03. ~ 2019.02.</span>
+        </div>
+        <p class="kind">임상병리학과 학사, 졸업</p>
+      </div>
+    </section>
+
+    <section class="cv">
+      <h2>대외활동</h2>
+      <div class="entry">
+        <div class="entry-head">
+          <h3>교환 학생, San Diego State University</h3>
+          <span class="period">2017</span>
+        </div>
+        <p>Oral Communication 수업을 들으며 여러 나라 학생들과 그룹 과제를 했습니다. 상대의 의견을 먼저 듣고 인정한 뒤 주장할 때 토론이 더 나은 방향으로 간다는 것을 배웠고, 발표를 녹화해 나쁜 습관을 고쳤습니다.</p>
+      </div>
+      <div class="entry">
+        <div class="entry-head">
+          <h3>Global Village Program, 연세대학교 원주캠퍼스</h3>
+          <span class="period">2018</span>
+        </div>
+        <p>미국 교환 학생들과 기숙사 생활을 하며 학교 생활 적응을 돕고, 주 3회 한국어 수업을 보조했습니다.</p>
+      </div>
+      <div class="entry">
+        <div class="entry-head">
+          <h3>캡스톤 디자인 경진대회, 연세대학교</h3>
+          <span class="period">2016</span>
+        </div>
+        <p>혈청으로 개의 알레르기를 진단하는 키트를 개발했습니다. 조장으로서 업무를 나누고 실험 일정을 조율했으며, 업무별 우선순위와 마감일을 정해 한 학기 안에 대회를 마쳤습니다.</p>
+      </div>
+    </section>
+
+    <section class="cv">
+      <h2>자격증·외국어</h2>
+      <dl class="points">
+        <dt>임상병리사</dt><dd>보건복지부, 2019.03.</dd>
+        <dt>영어</dt><dd>비즈니스 회화 가능</dd>
+      </dl>
+    </section>
   </article>
 </Base>

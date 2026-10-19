@@ -4,6 +4,7 @@ date: 2024-02-05
 description: "Solution1"
 source: medium
 original: "https://medium.com/@sj.youns1027/programmers-018203f338eb"
+category: coding-test
 ---
 LV02
 

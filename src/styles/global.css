@@ -51,7 +51,6 @@ footer.site { color: var(--muted); font-size: 14px; padding-top: 48px; padding-b
 /* ---- 첫 화면 ---- */
 .intro { padding: 40px 0 28px; border-bottom: 1px solid var(--line); }
 .intro h1 { font-size: clamp(28px, 6vw, 40px); line-height: 1.25; margin: 0; letter-spacing: -0.02em; font-weight: 800; }
-.intro h1 .arrow { color: var(--accent); font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 600; font-variant-ligatures: none; }
 .intro p { color: var(--muted); margin: 12px 0 0; }
 
 .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 6px; }
@@ -64,12 +63,7 @@ footer.site { color: var(--muted); font-size: 14px; padding-top: 48px; padding-b
 .year { margin-top: 34px; }
 .year h2 { font-size: 15px; color: var(--muted); font-weight: 600; margin: 0 0 6px; }
 .posts { list-style: none; margin: 0; padding: 0; }
-.posts li { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 0 4px; align-items: baseline; padding: 7px 0; }
-.posts li::before {
-  content: '=>'; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 14px; font-variant-ligatures: none;
-  color: var(--muted); transition: color 120ms;
-}
-.posts li:hover::before { color: var(--accent); }
+.posts li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 4px; align-items: baseline; padding: 7px 0; }
 .posts a { text-decoration: none; font-weight: 600; }
 .posts .sub { display: block; color: var(--muted); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .posts .theme { font-size: 13px; font-weight: 600; margin-left: 8px; white-space: nowrap; }
@@ -77,7 +71,7 @@ footer.site { color: var(--muted); font-size: 14px; padding-top: 48px; padding-b
 .theme[data-theme='problem-solving'] { color: var(--t-problem); }
 .theme[data-theme='adoption'] { color: var(--t-adoption); }
 .theme[data-theme='learned'] { color: var(--t-learned); }
-.posts li[hidden] { display: none; }
+.posts li[hidden], .year[hidden] { display: none; }
 
 /* ---- 글 ---- */
 .post-head { padding: 40px 0 20px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
@@ -102,7 +96,33 @@ footer.site { color: var(--muted); font-size: 14px; padding-top: 48px; padding-b
 
 @media (max-width: 560px) {
   body { font-size: 16px; }
-  .posts li { grid-template-columns: 2em minmax(0, 1fr); }
-  .posts time { grid-column: 2; padding-left: 0; }
+  .posts li { grid-template-columns: minmax(0, 1fr); }
+  .posts time { padding-left: 0; }
 }
-@media (prefers-reduced-motion: reduce) { .posts li::before { transition: none; } }
+
+/* ---- 이력서 ---- */
+.resume .contact { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; color: var(--muted); font-size: 15px; }
+.resume .lead { padding-left: 1.1em; }
+.resume .lead li { margin-bottom: 0.5em; }
+.cv { max-width: var(--measure); margin-top: 44px; }
+.cv h2 { font-size: 15px; color: var(--muted); font-weight: 600; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.cv h3 { font-size: 18px; margin: 0; line-height: 1.4; letter-spacing: -0.01em; }
+.cv p, .cv ul { margin: 0 0 0.8em; }
+.cv ul { padding-left: 1.1em; }
+.entry { padding: 4px 0 18px; }
+.entry + .entry { padding-top: 18px; border-top: 1px dashed var(--line); }
+.entry-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 16px; }
+.period { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kind { color: var(--accent); font-size: 14px; font-weight: 600; margin: 2px 0 8px !important; }
+.points { display: grid; grid-template-columns: 8.5em minmax(0, 1fr); gap: 6px 14px; margin: 0 0 0.8em; font-size: 15px; }
+.points dt { font-weight: 600; }
+.points dd { margin: 0; color: color-mix(in srgb, var(--ink) 85%, var(--paper)); }
+.links { display: flex; gap: 16px; font-size: 14px; }
+.skill-row { display: grid; grid-template-columns: 8.5em minmax(0, 1fr); gap: 6px 14px; align-items: baseline; margin-bottom: 10px; }
+.skill-row h3 { font-size: 15px; font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0 !important; margin: 0 !important; }
+.chips li { font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 11px; }
+@media (max-width: 560px) {
+  .points, .skill-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .points dd { margin-bottom: 8px; }
+}

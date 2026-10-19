@@ -12,6 +12,8 @@ const blog = defineCollection({
     tags: z.array(z.string()).default([]),
     source: z.enum(['medium', 'journal']).default('journal'),
     original: z.string().optional(),
+    // 코딩테스트 풀이는 전체 목록에서 빼고 코딩테스트 탭에만 보인다
+    category: z.enum(['coding-test']).optional(),
   }),
 });
 
