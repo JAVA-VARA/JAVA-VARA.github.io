@@ -51,7 +51,7 @@ export const featured: { name: string; kind: string; period: string; summary: st
       ['통합 처리 흐름', '입력 파일 사전검사 → DuckDB 적재 → 환자·수술 에피소드 연결 → SQL·pandas 전처리 → 원자료 기반 검토 → eCRF 엑셀 생성'],
       ['AI 에이전트 개발 체계', '임상 기준 정의와 결과 승인은 직접 수행하고, Claude Code는 설계·리뷰, Codex·Jules는 구현에 역할별로 활용. 실데이터가 필요한 작업은 로컬, 코드만 필요한 작업은 원격으로 나누고 Git Worktree·Hook으로 편집 제한·리뷰·병합 절차를 구성해 작업 120건을 병합. 공개 데모와 원격 테스트에는 합성 데이터만 사용'],
     ],
-    links: [['검토 화면 데모(합성 데이터)', '/demo/hub/']],
+    links: [['검토 화면 데모(합성 데이터)', '/demo/hub/'], ['AI 에이전트 작업 지도', '/workflow/']],
   },
   {
     name: '임상시험 Q&A 아카이브',
