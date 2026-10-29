@@ -1,14 +1,14 @@
 ---
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { allPosts, ymd, THEMES, type Post } from '../../lib/posts';
+import { allPosts, adjacentPosts, ymd, THEMES, type Post, type Adjacent } from '../../lib/posts';
 
 export async function getStaticPaths() {
   const posts = await allPosts();
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, adjacent: adjacentPosts(posts, post) } }));
 }
 
-const { post } = Astro.props as { post: Post };
+const { post, adjacent } = Astro.props as { post: Post; adjacent: Adjacent };
 const { Content } = await render(post);
 const d = post.data;
 ---
@@ -26,6 +26,19 @@ const d = post.data;
       <Content />
     </div>
     <footer class="post-foot">
+      {(adjacent.prev || adjacent.next) && (
+        <nav class="post-nav" aria-label="이전 글과 다음 글">
+          {adjacent.series && <p class="series">연재 {adjacent.series.index}/{adjacent.series.total}편</p>}
+          <div class="pair">
+            {adjacent.prev && (
+              <a class="prev" href={`/blog/${adjacent.prev.id}/`} rel="prev"><span>이전 글</span><strong>{adjacent.prev.data.title}</strong></a>
+            )}
+            {adjacent.next && (
+              <a class="next" href={`/blog/${adjacent.next.id}/`} rel="next"><span>다음 글</span><strong>{adjacent.next.data.title}</strong></a>
+            )}
+          </div>
+        </nav>
+      )}
       <p><a href="/">다른 글 보기</a></p>
     </footer>
   </article>

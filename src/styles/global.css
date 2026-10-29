@@ -107,11 +107,23 @@ footer.site { color: var(--muted); font-size: 14px; padding-top: 48px; padding-b
   .prose pre.astro-code, .prose pre.astro-code span { color: var(--shiki-dark) !important; background-color: var(--shiki-dark-bg) !important; }
 }
 .post-foot { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+/* 이전 글·다음 글: 다음 글은 오른쪽 칸에 둬서 한쪽만 있어도 방향이 보인다 */
+.post-nav { margin-bottom: 20px; }
+.post-nav .series { margin: 0 0 10px; }
+.post-nav .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.post-nav a { display: block; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; text-decoration: none; }
+.post-nav a:hover strong, .post-nav a:focus-visible strong { text-decoration: underline; }
+.post-nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.post-nav .next { grid-column: 2; text-align: right; }
+.post-nav span { display: block; color: var(--muted); font-size: 13px; }
+.post-nav strong { display: block; color: var(--ink); font-size: 15px; line-height: 1.45; }
 
 @media (max-width: 560px) {
   body { font-size: 16px; }
   .posts li { grid-template-columns: minmax(0, 1fr); }
   .posts time { padding-left: 0; }
+  .post-nav .pair { grid-template-columns: minmax(0, 1fr); }
+  .post-nav .next { grid-column: auto; }
 }
 
 /* ---- 이력서 ---- */
