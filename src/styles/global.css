@@ -117,6 +117,8 @@ footer.site { color: var(--muted); font-size: 14px; padding-top: 48px; padding-b
 .post-nav .next { grid-column: 2; text-align: right; }
 .post-nav span { display: block; color: var(--muted); font-size: 13px; }
 .post-nav strong { display: block; color: var(--ink); font-size: 15px; line-height: 1.45; }
+/* 설명: 번호뿐인 연재 제목을 보완한다. 길면 두 줄에서 자른다 */
+.post-nav em { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin-top: 2px; color: var(--muted); font-size: 14px; font-style: normal; line-height: 1.45; }
 
 @media (max-width: 560px) {
   body { font-size: 16px; }

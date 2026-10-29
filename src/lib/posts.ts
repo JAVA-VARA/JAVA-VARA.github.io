@@ -41,6 +41,12 @@ function seriesNo(id: string): number {
   return m ? Number(m[1]) : Infinity;
 }
 
+// 이전/다음 글 링크에 붙일 한 줄 설명. 없거나 제목과 같으면 생략
+export function navDescription(post: Post): string | undefined {
+  const desc = post.data.description?.trim();
+  return desc && desc !== post.data.title.trim() ? desc : undefined;
+}
+
 export type Adjacent = { prev?: Post; next?: Post; series?: { index: number; total: number } };
 
 // 이전 글·다음 글. 같은 연재가 2편 이상이면 연재 안에서, 아니면 같은 갈래(코딩테스트/그 밖) 안에서 날짜순
