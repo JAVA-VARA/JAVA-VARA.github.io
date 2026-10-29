@@ -1,0 +1,41 @@
+---
+import Base from '../layouts/Base.astro';
+import { allPosts, projectPosts, entryLabel, ymd } from '../lib/posts';
+import { PROJECTS } from '../data/projects';
+
+const posts = await allPosts();
+const groups = PROJECTS.map((project) => ({ project, list: projectPosts(posts, project) })).filter((g) => g.list.length > 0);
+const ym = (d: Date) => ymd(d).slice(0, 7).replace('-', '.');
+---
+<Base title="프로젝트" description="직접 만든 서비스별로, 만들면서 쓴 글을 처음부터 순서대로 모았다.">
+  <section class="intro">
+    <h1>프로젝트</h1>
+    <p>직접 만든 서비스별로, 만들면서 쓴 글을 처음부터 순서대로 모았다.</p>
+  </section>
+
+  {groups.map(({ project, list }) => (
+    <section class="project" id={project.id} aria-labelledby={`${project.id}-name`}>
+      <h2 id={`${project.id}-name`}>{project.name}</h2>
+      <p class="summary">{project.summary}</p>
+      <p class="facts">
+        <span>{list.length}편, {ym(list[0].data.date)}–{ym(list[list.length - 1].data.date)}</span>
+        <span>{project.stack.join(', ')}</span>
+      </p>
+      <ol class="entries">
+        {list.map((p) => {
+          const label = entryLabel(p);
+          const desc = p.data.description?.trim();
+          return (
+            <li>
+              <span style="min-width:0">
+                <a href={`/blog/${p.id}/`}>{label}</a>
+                {desc && desc !== label && <span class="sub">{desc}</span>}
+              </span>
+              <time datetime={ymd(p.data.date)}>{ymd(p.data.date)}</time>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  ))}
+</Base>

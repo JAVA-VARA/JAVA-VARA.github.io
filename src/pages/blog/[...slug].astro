@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { allPosts, adjacentPosts, ymd, navDescription, THEMES, type Post, type Adjacent } from '../../lib/posts';
+import { allPosts, adjacentPosts, ymd, navDescription, entryLabel, THEMES, type Post, type Adjacent } from '../../lib/posts';
 
 export async function getStaticPaths() {
   const posts = await allPosts();
@@ -22,6 +22,17 @@ const d = post.data;
         {d.tags.length > 0 && <span>{d.tags.join(', ')}</span>}
       </div>
     </header>
+    {adjacent.series && (
+      <details class="series-toc">
+        <summary>{adjacent.series.project?.name ?? '연재'} <span>{adjacent.series.index}/{adjacent.series.total}편, 목차</span></summary>
+        <ol>
+          {adjacent.series.posts.map((p) => (
+            <li>{p.id === post.id ? <strong aria-current="page">{entryLabel(p)}</strong> : <a href={`/blog/${p.id}/`}>{entryLabel(p)}</a>}</li>
+          ))}
+        </ol>
+        {adjacent.series.project && <p><a href={`/projects/#${adjacent.series.project.id}`}>프로젝트 글 모아 보기</a></p>}
+      </details>
+    )}
     <div class="prose">
       <Content />
     </div>

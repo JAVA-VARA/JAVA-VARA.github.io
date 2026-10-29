@@ -120,12 +120,43 @@ footer.site { color: var(--muted); font-size: 14px; padding-top: 48px; padding-b
 /* 설명: 번호뿐인 연재 제목을 보완한다. 길면 두 줄에서 자른다 */
 .post-nav em { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin-top: 2px; color: var(--muted); font-size: 14px; font-style: normal; line-height: 1.45; }
 
+/* 글 상단 연재 목차: 기본은 접어 두고, 지금 글은 굵게 표시한다 */
+.series-toc { margin: -8px 0 28px; border: 1px solid var(--line); border-radius: 8px; font-size: 15px; }
+.series-toc summary { display: flex; align-items: baseline; gap: 10px; padding: 10px 14px; cursor: pointer; list-style: none; font-weight: 700; }
+.series-toc summary::-webkit-details-marker { display: none; }
+.series-toc summary::before { content: ''; width: 7px; height: 7px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(-45deg); transition: transform 120ms; align-self: center; flex: none; }
+.series-toc[open] summary::before { transform: rotate(45deg); }
+.series-toc summary span { color: var(--muted); font-size: 14px; font-weight: 400; }
+.series-toc summary:hover::before { border-color: var(--accent); }
+.series-toc ol { margin: 0; padding: 2px 14px 10px 44px; max-height: 22em; overflow-y: auto; line-height: 1.6; }
+.series-toc li { padding: 2px 0; }
+.series-toc li::marker { color: var(--muted); font-variant-numeric: tabular-nums; }
+.series-toc a { text-decoration: none; }
+.series-toc strong { color: var(--accent); }
+.series-toc p { margin: 0; padding: 8px 14px 10px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .series-toc summary::before { transition: none; } }
+
+/* ---- 프로젝트 ---- */
+.project { margin-top: 40px; }
+.project h2 { font-size: 24px; line-height: 1.3; margin: 0 0 6px; letter-spacing: -0.01em; }
+.project .summary { margin: 0 0 6px; max-width: var(--measure); }
+.project .facts { display: flex; flex-wrap: wrap; gap: 2px 16px; margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+/* 번호 줄: 연재 순서가 곧 작업 순서라 번호를 왼쪽 세로줄에 붙여 이어지게 보인다 */
+.entries { list-style: none; margin: 0; padding: 0; counter-reset: entry; border-left: 2px solid var(--line); }
+.entries li { counter-increment: entry; display: grid; grid-template-columns: 3em minmax(0, 1fr) auto; align-items: baseline; padding: 6px 0; }
+.entries li::before { content: counter(entry); color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; text-align: right; padding-right: 14px; }
+.entries a { text-decoration: none; font-weight: 600; }
+.entries .sub { display: block; color: var(--muted); font-size: 14px; }
+.entries time { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; padding-left: 12px; }
+
 @media (max-width: 560px) {
   body { font-size: 16px; }
   .posts li { grid-template-columns: minmax(0, 1fr); }
   .posts time { padding-left: 0; }
   .post-nav .pair { grid-template-columns: minmax(0, 1fr); }
   .post-nav .next { grid-column: auto; }
+  .entries li { grid-template-columns: 2.4em minmax(0, 1fr); }
+  .entries time { grid-column: 2; padding-left: 0; }
 }
 
 /* ---- 이력서 ---- */
